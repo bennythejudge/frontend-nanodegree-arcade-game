@@ -25,10 +25,38 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
 
-    canvas.width = 505;
+    // canvas.width = 505;
+    // canvas.height = 606;
+    // increased the size of the canvas
+    canvas.width = 809;
     canvas.height = 606;
     doc.body.appendChild(canvas);
 
+
+    // this function checks if the sprite of 2 objects are overlapping in the 
+    // canvas and returns True or False
+    // in input 2 objects of type Enemy and/or Player
+    var imagesOverlap = function (enemy,player) {
+       // console.log(obj1.x);
+       if ( (enemy.x >= player.x - PLAYER_WIDTH/2 && enemy.x<=player.x+PLAYER_WIDTH/2) && (enemy.y===player.y)) {
+          console.log("CLASH at y: " + player.y);
+          return true;
+       };
+       return false;
+    }
+
+    // game over
+    function gameOver() {
+       GAME_OVER=true;
+       console.log("inside gameOver: " + ctx);
+       // write GameOVer
+    }
+
+    // reset the player to starting point
+    function resetPlayer() {
+       player.x=PLAYER_START_X;
+       player.y=PLAYER_START_Y;
+    }
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
      */
@@ -41,18 +69,15 @@ var Engine = (function(global) {
          */
         var now = Date.now(),
             dt = (now - lastTime) / 1000.0;
-
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
-        // update(dt);
+        update(dt);
         render();
-
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
          */
         lastTime = now;
-
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
@@ -68,7 +93,6 @@ var Engine = (function(global) {
         lastTime = Date.now();
         main();
     }
-
     /* This function is called by main (our game loop) and itself calls all
      * of the functions which may need to update entity's data. Based on how
      * you implement your collision detection (when two entities occupy the
@@ -78,11 +102,32 @@ var Engine = (function(global) {
      * functionality this way (you could just implement collision detection
      * on the entities themselves within your app.js file).
      */
-    // function update(dt) {
-    //     updateEntities(dt);
-    //     // checkCollisions();
-    //}
-
+    function update(dt) {
+       if (!GAME_OVER) {
+          updateEntities(dt);
+          checkCollisions();
+       }
+    }
+    /* check for collisions */
+    function checkCollisions() {
+       if(typeof StopIteration == "undefined") {
+        StopIteration = new Error("StopIteration");
+       }
+       try {
+          allEnemies.forEach(function(enemy) {
+             if (imagesOverlap(enemy,player)) {
+                resetPlayer();
+                PLAYER_LIVES--;
+                if (PLAYER_LIVES===0) {
+                   gameOver();
+                   throw StopIteration;
+                }
+             };
+          });
+       } catch(error) { if (error != StopIteration) throw error; }
+       // console.log("outside forEach");
+       // return;
+    }
     /* This is called by the update function  and loops through all of the
      * objects within your allEnemies array as defined in app.js and calls
      * their update() methods. It will then call the update function for your
@@ -90,12 +135,17 @@ var Engine = (function(global) {
      * the data/properties related to  the object. Do your drawing in your
      * render methods.
      */
-    // function updateEntities(dt) {
-//         allEnemies.forEach(function(enemy) {
-//             enemy.update(dt);
-//         });
-//         player.update();
-//     }
+    
+    // this is the "heart" of the game
+    function updateEntities(dt) {
+       //console.log("inside updateEntities");
+       if (! GAME_OVER) {
+          allEnemies.forEach(function(enemy) {
+              enemy.update(dt);
+          });
+          player.update();
+       }
+    }
 
     /* This function initially draws the "game level", it will then call
      * the renderEntities function. Remember, this function is called every
@@ -103,12 +153,14 @@ var Engine = (function(global) {
      * they are flipbooks creating the illusion of animation but in reality
      * they are just drawing the entire screen over and over.
      */
+    // adding the gameover text
     function render() {
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
         var rowImages = [
                 'images/water-block.png',   // Top row is water
+                'images/grass-block.png',   // Row 1 of 2 of grass
                 'images/stone-block.png',   // Row 1 of 3 of stone
                 'images/stone-block.png',   // Row 2 of 3 of stone
                 'images/stone-block.png',   // Row 3 of 3 of stone
@@ -116,7 +168,7 @@ var Engine = (function(global) {
                 'images/grass-block.png'    // Row 2 of 2 of grass
             ],
             numRows = 6,
-            numCols = 5,
+            numCols = 8,
             row, col;
 
         /* Loop through the number of rows and columns we've defined above
@@ -135,7 +187,15 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
-        //renderEntities();
+        renderEntities();
+        if (GAME_OVER) {
+           ctx.fillStyle = "blue";
+           ctx.font = "bold 48pt Arial";
+           var msg="Game Over!";
+           var t=ctx.measureText(msg).width;
+           //console.log(t);
+           ctx.fillText(msg, (canvas.width - t)/2, ((canvas.height-48)/2)+48);
+        }
     }
 
     /* This function is called by the render function and is called on each game
@@ -147,9 +207,9 @@ var Engine = (function(global) {
          * the render function you have defined.
          */
         allEnemies.forEach(function(enemy) {
+            // console.log("rendering enemy");
             enemy.render();
         });
-
         player.render();
     }
 
@@ -170,7 +230,8 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/char-cat-girl.png'
     ]);
     Resources.onReady(init);
 
