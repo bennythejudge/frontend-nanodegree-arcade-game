@@ -1,5 +1,14 @@
-// TODO: enemies only appear in first 2 top lines, why not on 3rd line?
-// TODO: enemies appear on first column instead of outside of screen
+// TODO: in engine.js, at line 190, add a health bar for player
+//       fill it in red as the player loses lives. it must be in proportion
+//       to the length of the bar and to the total number of lives
+//       position it to cover the bottom part of the grass tiles at the bottom
+//       width / total number of lives -> unit of the bar
+//       initially the bar is green. every time a live is lost, one unit becomes red
+//
+// TODO: the game could consist in having to get to the top grass line to fetch something and 
+//       then bring it back to the bottom grass line.
+//       it could be just any object, but it could also be letters, randomly posted, to make real words
+//       words would have to be validated against an authority, say cambridge or wm
 
 // some globals
 var PLAYER_START_X = 0;
@@ -32,10 +41,13 @@ var PLAYER_LIVES=1;
 var PLAYER_POINTS=0;
 // game engine control
 var GAME_OVER = false;
+// prizes
+var PRIZE_TIME_LIMIT=500;
 
 // helpers
-var random_generator = function (min,max) {
-   return Math.floor( (Math.random() * max) + min);
+// add 1 to cover the whole range min, max
+var randomGenerator = function (min,max) {
+   return Math.floor( (Math.random() * (max+1)) + min);
 }
 
 // Enemies our player must avoid
@@ -73,11 +85,11 @@ Enemy.prototype.update = function(dt) {
          // random line
          var r;
          do {
-            r = FIRST_ROCKS_ROW_START + (random_generator(0,2+1) * TILE_HEIGHT);
+            r = FIRST_ROCKS_ROW_START + (randomGenerator(0,2) * TILE_HEIGHT);
          } while (r===this.y);
          this.y = r;
          // random speed
-         this.v = random_generator(1,6);
+         this.v = randomGenerator(1,5);
          // go!
       } else {
          this.x+=101*dt*this.v;
@@ -150,6 +162,32 @@ Player.prototype.handleInput = function(key) {
    }
 }
 
+/* 
+ add another class for the prizes
+ a prize attributes are:
+ location (x,y)
+ sprite (it should be generated randomly)
+*/
+var Prize = function(x,y,spriteName) {
+   this.x = x;
+   this.y = y;
+   this.sprite = spriteName;
+}
+
+/* 
+TODO: do we need this ?
+ what is update for a Prize? Not clear yet
+*/
+Prize.prototype.update = function() {
+   console.log("update prize");
+}
+
+Prize.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
@@ -161,12 +199,14 @@ var allEnemies = [];
 // create the enemies
 for (var i=0;i<MAX_NUMBER_ENEMIES; i++) {
    // pick a random line (1, 2 or 3)
-   var r = random_generator (0,2+1);
-   var v = random_generator(1,6);
+   var r = randomGenerator(0,2);
+   var v = randomGenerator(1,5);
    // console.log("random: " + r);
    var enemy = new Enemy(ENEMY_WIDTH * -1,FIRST_ROCKS_ROW_START+(r*83),v);
    allEnemies.push(enemy);
 }
+
+// prizes are not created here but later on, see engine.js
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.

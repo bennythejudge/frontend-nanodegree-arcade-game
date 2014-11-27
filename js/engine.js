@@ -32,13 +32,18 @@ var Engine = (function(global) {
     canvas.height = 606;
     doc.body.appendChild(canvas);
 
+    // a timer for prizes
+    var timer=0;
+    var prize;
 
     // this function checks if the sprite of 2 objects are overlapping in the 
     // canvas and returns True or False
     // in input 2 objects of type Enemy and/or Player
     var imagesOverlap = function (enemy,player) {
        // console.log(obj1.x);
-       if ( (enemy.x >= player.x - PLAYER_WIDTH/2 && enemy.x<=player.x+PLAYER_WIDTH/2) && (enemy.y===player.y)) {
+       if ( (enemy.x >= player.x - PLAYER_WIDTH/2 && 
+          enemy.x<=player.x+PLAYER_WIDTH/2) && 
+          (enemy.y===player.y)) {
           console.log("CLASH at y: " + player.y);
           return true;
        };
@@ -93,6 +98,36 @@ var Engine = (function(global) {
         lastTime = Date.now();
         main();
     }
+    
+    // manage prizes
+    function doPrize() {
+       // is a prize already active?
+       if (timer>0) {
+          timer--; 
+          if (timer === 0) {
+             // timeout, retire prize
+             console.log("deleting the prize");
+             prize={};
+          }
+       } else {
+          // throw a dice and show a prize for a period of time
+          // if it's a 6 and no prize exists, go ahead
+          var r = randomGenerator(1,100);
+          console.log
+          if (r === 6 ) {
+             console.log("crea prize");
+             // TODO: need random coordinates and random type
+              // 'images/gemblue.png',
+              // 'images/gemgreen.png',
+              // 'images/gemorange.png'
+             var row = randomGenerator(1,8)
+             prize = new Prize(200,235,'images/Star.png');
+             timer = randomGenerator(150,700);
+             console.log("timer: " + timer);
+          }
+       }
+    }
+    
     /* This function is called by main (our game loop) and itself calls all
      * of the functions which may need to update entity's data. Based on how
      * you implement your collision detection (when two entities occupy the
@@ -104,6 +139,7 @@ var Engine = (function(global) {
      */
     function update(dt) {
        if (!GAME_OVER) {
+          doPrize();
           updateEntities(dt);
           checkCollisions();
        }
@@ -144,6 +180,9 @@ var Engine = (function(global) {
               enemy.update(dt);
           });
           player.update();
+          if (timer>0) { 
+             prize.update();
+          }
        }
     }
 
@@ -187,6 +226,9 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
+        // TODO: add here the health bar for player
+        
+        
         renderEntities();
         if (GAME_OVER) {
            ctx.fillStyle = "blue";
@@ -206,6 +248,9 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
+       if (timer>0) {
+          prize.render();
+       }
         allEnemies.forEach(function(enemy) {
             // console.log("rendering enemy");
             enemy.render();
@@ -231,7 +276,12 @@ var Engine = (function(global) {
         'images/grass-block.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
-        'images/char-cat-girl.png'
+        'images/char-cat-girl.png',
+        'images/gemblue.png',
+        'images/gemgreen.png',
+        'images/gemorange.png',
+        'images/Key.png',
+        'images/Star.png'
     ]);
     Resources.onReady(init);
 
