@@ -77,7 +77,7 @@ var Engine = (function(global) {
             obj1.x+obj1.width <= obj2.x+obj2.width) &&
             (obj1.y === obj2.y)) 
        {
-          console.log("CLASH at y: " + player.y);
+          // console.log("CLASH at y: " + player.y);
           return true;
        };
        return false;
@@ -86,7 +86,7 @@ var Engine = (function(global) {
     // game over
     function gameOver() {
        GAME_OVER=true;
-       console.log("inside gameOver: " + ctx);
+       // console.log("inside gameOver: " + ctx);
        // write GameOVer
     }
 
@@ -139,7 +139,7 @@ var Engine = (function(global) {
           timer--; 
           if (timer === 0) {
              // timeout, retire prize
-             console.log("deleting the prize");
+             // console.log("deleting the prize");
              prize={};
           }
        } else {
@@ -158,13 +158,13 @@ var Engine = (function(global) {
              // console.log("tile_height calcolata: " + tile_height);
              // console.log("tile height constant: " + TILE_HEIGHT);
              var n = randomGenerator(2,4);
-             console.log("n: " + n + "(should be 2-4)");
+             // console.log("n: " + n + "(should be 2-4)");
              var x = randomGenerator(0,7);
-             console.log("star: x: "+TILE_WIDTH*x+" y:"+TILE_HEIGHT*n);
+             // console.log("star: x: "+TILE_WIDTH*x+" y:"+TILE_HEIGHT*n);
              prize=new Prize(TILE_WIDTH*x+10,TILE_HEIGHT*n-10,'images/Star.png',PRIZE_WIDTH,PRIZE_HEIGHT);
              // prize=new Prize(693,332,'images/Star.png',PRIZE_WIDTH,PRIZE_HEIGHT);
              timer = randomGenerator(150,700);
-             console.log("timer: " + timer);
+             // console.log("timer: " + timer);
           }
        }
     }
@@ -198,8 +198,9 @@ var Engine = (function(global) {
        if (t === true) {
           timer=0;
           PLAYER_POINTS++;
-          // document.getElementById("content").innerHTML = "whatever";
-          console.log("points: " + PLAYER_POINTS);
+          // doc.getElementById("score").innerHTML = "Score: " + PLAYER_POINTS;
+          // doc.getElementById("lives").innerHTML = "Lives: " + PLAYER_LIVES;
+          // console.log("points: " + PLAYER_POINTS);
           
        }
        
@@ -303,6 +304,9 @@ var Engine = (function(global) {
            //console.log(t);
            ctx.fillText(msg, (canvas.width - t)/2, ((canvas.height-48)/2)+48);
         }
+        // display scores and lives
+        doc.getElementById("score").innerHTML = "Score: " + PLAYER_POINTS;
+        doc.getElementById("lives").innerHTML = "Lives: " + PLAYER_LIVES;
     }
 
     /* This function is called by the render function and is called on each game
@@ -330,6 +334,8 @@ var Engine = (function(global) {
     function reset() {
        // noop
        PLAYER_POINTS=0;
+       PLAYER_LIVES=5;
+       GAME_OVER=false;
     }
 
     /* Go ahead and load all of the images we know we're going to need to
