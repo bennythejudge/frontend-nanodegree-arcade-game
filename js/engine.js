@@ -36,6 +36,24 @@ var Engine = (function(global) {
     var timer=0;
     var prize;
 
+    /* new collision detection function */
+    
+    var collisionDetection = function(object1,object2) {
+       // console.log("obj1: (" + object1.x + "," + object1.y + "," + object1.width + ")" );
+       // console.log("obj2: (" + object2.x + "," + object2.y + "," + object2.width + ")" );
+       // return false;
+       // my own bounding box collision detection
+       if (object2.x >= object1.x && object2.x <= (object1.x + object1.width) &&
+            object2.y >= object1.y && object2.y <= (object1.y + object1.height))
+       {
+          //console.log(object1 + " collides with " + object2);
+          return true;
+       } else {
+          // console.log(object1 + " DOES NOT collides with " + object2);
+          return false;
+       }
+    }
+
     // this function checks if the sprite of 2 objects are overlapping in the 
     // canvas and returns True or False
     // in input 2 objects plus the width of obj2 as size reference
@@ -162,9 +180,9 @@ var Engine = (function(global) {
     // checks if the Player has collected a prize
     function checkPrizeCollections() {
        //console.log("checking prize collections");
-       console.log("player.x: " + player.x + " player.y: " + player.y);
-       console.log("prize.x: " + prize.x + " prize.y: " + prize.y);
-       var t = imagesOverlap(player,prize);
+       // console.log("player.x: " + player.x + " player.y: " + player.y);
+       // console.log("prize.x: " + prize.x + " prize.y: " + prize.y);
+       var t = collisionDetection(player,prize);
        if (t === true) {
           timer=0;
           PLAYER_POINTS++;
@@ -174,25 +192,27 @@ var Engine = (function(global) {
        
     }
     
-    /* check for collisions */
+    /* check for collisions between player and enemies*/
     function checkCollisions() {
-       // to stop the forEach i will use an exception
+       // using an exception to stop the forEach loop
        // the break statement is not available in this case
        if(typeof StopIteration == "undefined") {
         StopIteration = new Error("StopIteration");
        }
-       try {
+       try 
+       {
           allEnemies.forEach(function(enemy) {
-             if (imagesOverlap(enemy,player)) {
+            if (collisionDetection(enemy,player)) {
                 resetPlayer();
                 PLAYER_LIVES--;
                 if (PLAYER_LIVES===0) {
                    gameOver();
                    throw StopIteration;
                 }
-             };
+            };
           });
-       } catch(error) { if (error != StopIteration) throw error; }
+       } 
+       catch(error) { if (error != StopIteration) throw error; }
        // console.log("outside forEach");
        // return;
     }

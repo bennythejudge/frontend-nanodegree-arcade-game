@@ -132,6 +132,7 @@ var Player = function(x,y,w,h) {
    this.x = x;
    this.y = y;
    this.width=w
+   this.height=h;
 }
 
 Player.prototype.update = function(dt) {
@@ -200,11 +201,11 @@ var Prize = function(x,y,spriteName,w,h) {
    this.height=h;
    var img = new Image();
    img.src = this.sprite;
-   img.onload = function(){
-     var height = img.height;
-     var width = img.width;
-     console.log("sprite width: " + width + " height: " + height);
-   }
+   // img.onload = function(){
+   //   var height = img.height;
+   //   var width = img.width;
+   //   console.log("sprite width: " + width + " height: " + height);
+   // }
 }
 
 /* 
