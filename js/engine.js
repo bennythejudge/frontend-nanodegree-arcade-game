@@ -39,12 +39,23 @@ var Engine = (function(global) {
     /* new collision detection function */
     
     var collisionDetection = function(object1,object2) {
-       // console.log("obj1: (" + object1.x + "," + object1.y + "," + object1.width + ")" );
-       // console.log("obj2: (" + object2.x + "," + object2.y + "," + object2.width + ")" );
-       // return false;
+       // console.log("obj1: (" + object1.x + "," + object1.y + "," + object1.width + "," + object1.height + ")" );
+       // console.log("obj2: (" + object2.x + "," + object2.y + "," + object2.width + "," + object2.height + ")" );
+       // se la distanza assoluta tra x1 e x2 < 
        // my own bounding box collision detection
-       if (object2.x >= object1.x && object2.x <= (object1.x + object1.width) &&
-            object2.y >= object1.y && object2.y <= (object1.y + object1.height))
+       // if (
+       //    (object2.x >= object1.x && object2.x <= (object1.x + object1.width) &&
+       //      object2.y >= object1.y && object2.y <= (object1.y + object1.height)
+       //    ) ||
+       //    (
+       //       object1.x >= object2.x && object1.x <= (object2.x + object2.width) &&
+       //      object1.y >= object2.y && object1.y <= (object2.y + object2.height)
+       //    )
+       //    )
+       if (object1.x < object2.x + object2.width &&
+          object1.x + object1.width > object2.x &&
+          object1.y < object2.y + object2.height &&
+          object1.height + object1.y > object2.y) 
        {
           //console.log(object1 + " collides with " + object2);
           return true;
@@ -151,6 +162,7 @@ var Engine = (function(global) {
              var x = randomGenerator(0,7);
              console.log("star: x: "+TILE_WIDTH*x+" y:"+TILE_HEIGHT*n);
              prize=new Prize(TILE_WIDTH*x+10,TILE_HEIGHT*n-10,'images/Star.png',PRIZE_WIDTH,PRIZE_HEIGHT);
+             // prize=new Prize(693,332,'images/Star.png',PRIZE_WIDTH,PRIZE_HEIGHT);
              timer = randomGenerator(150,700);
              console.log("timer: " + timer);
           }
@@ -182,10 +194,11 @@ var Engine = (function(global) {
        //console.log("checking prize collections");
        // console.log("player.x: " + player.x + " player.y: " + player.y);
        // console.log("prize.x: " + prize.x + " prize.y: " + prize.y);
-       var t = collisionDetection(player,prize);
+       var t = collisionDetection(prize,player);
        if (t === true) {
           timer=0;
           PLAYER_POINTS++;
+          // document.getElementById("content").innerHTML = "whatever";
           console.log("points: " + PLAYER_POINTS);
           
        }

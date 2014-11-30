@@ -12,6 +12,7 @@
 // TODO: at game over, do NOT reset the player, leave it where it "died"
 // TODO: the "feature" of a random sprite could be 'inherent' to the Prize class
 //       bring the random choice of sprite inside the Prize object
+// TODO: search for any hardcoded value and remove it
 
 // some globals
 // canvas size
@@ -27,12 +28,12 @@ var PLAYER_LEFT_MOVE=101;
 var PLAYER_UP_MOVE=83;
 var PLAYER_DOWN_MOVE=83;
 // player lives and scoring
-var PLAYER_LIVES=100;
+var PLAYER_LIVES=5;
 var PLAYER_POINTS=0;
 // enemy
 var ENEMY_WIDTH=78;
 var ENEMY_HEIGHT=68;
-var MAX_NUMBER_ENEMIES=4;
+var MAX_NUMBER_ENEMIES=5;
 // tiles
 var TILE_HEIGHT=83;
 var TILE_WIDTH=99;
@@ -122,6 +123,7 @@ Enemy.prototype.update = function(dt) {
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
+
 
 // Now write your own player class
 // This class requires an update(), render() and
