@@ -17,7 +17,7 @@
 // canvas size
 CANVAS_WIDTH = 809;
 CANVAS_HEIGHT = 606;
-//
+// player
 var PLAYER_START_X = 0;
 var PLAYER_START_Y = 404;  
 var PLAYER_WIDTH=78;
@@ -26,7 +26,14 @@ var PLAYER_RIGHT_MOVE=101;
 var PLAYER_LEFT_MOVE=101;
 var PLAYER_UP_MOVE=83;
 var PLAYER_DOWN_MOVE=83;
+// player lives and scoring
+var PLAYER_LIVES=100;
+var PLAYER_POINTS=0;
+// enemy
 var ENEMY_WIDTH=78;
+var ENEMY_HEIGHT=68;
+var MAX_NUMBER_ENEMIES=4;
+// tiles
 var TILE_HEIGHT=83;
 var TILE_WIDTH=99;
 // char_boy is aligned at 238 
@@ -43,14 +50,11 @@ var SECOND_ROCKS_ROW_START=238;
 var SECOND_ROCKS_COL_START=0;
 var THIRD_ROCKS_ROW_START=321;
 var THIRD_ROCKS_COL_START=0;
-var MAX_NUMBER_ENEMIES=0;
-// scoring
-var PLAYER_LIVES=100;
-var PLAYER_POINTS=0;
 // game engine control
 var GAME_OVER = false;
 // prizes
 var PRIZE_WIDTH=73;
+var PRIZE_HEIGHT=68;
 
 // helpers
 // add 1 to cover the whole range min, max
@@ -66,13 +70,15 @@ var randomGenerator = function (min,max) {
 
 // Enemies our player must avoid
 // adding v for velocity
-var Enemy = function(x,y,v,w) {
+// adding w for width and h for height
+var Enemy = function(x,y,v,w,h) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
    this.x = x;
    this.y = y;
    this.v = v;
    this.width = w;
+   this.height=h;
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/char-boy.png';
@@ -120,7 +126,8 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-var Player = function(x,y,w) {
+// adding h for height
+var Player = function(x,y,w,h) {
    this.sprite = 'images/char-cat-girl.png';
    this.x = x;
    this.y = y;
@@ -183,12 +190,14 @@ Player.prototype.handleInput = function(key) {
  a prize attributes are:
  location (x,y)
  sprite (it should be generated randomly)
+ adding h for height
 */
-var Prize = function(x,y,spriteName,w) {
+var Prize = function(x,y,spriteName,w,h) {
    this.x = x;
    this.y = y;
    this.sprite = spriteName;
    this.width = w;
+   this.height=h;
    var img = new Image();
    img.src = this.sprite;
    img.onload = function(){
@@ -216,15 +225,15 @@ Prize.prototype.render = function() {
 // set the inception location for enemies to -1 * ENEMY_WIDTH
 // so that it appears to come from an invisible area before the 
 // left margin of the canvas
-var player = new Player(PLAYER_START_X,PLAYER_START_Y,PLAYER_WIDTH);
+var player = new Player(PLAYER_START_X,PLAYER_START_Y,PLAYER_WIDTH,PLAYER_HEIGHT);
 var allEnemies = [];
 // create the enemies
 for (var i=0;i<MAX_NUMBER_ENEMIES; i++) {
    // pick a random line (1, 2 or 3)
    var r = randomGenerator(0,2);
-   var v = randomGenerator(1,5);
+   var velocity = randomGenerator(1,5);
    // console.log("random: " + r);
-   var enemy = new Enemy(ENEMY_WIDTH * -1,FIRST_ROCKS_ROW_START+(r*83),v,ENEMY_WIDTH);
+   var enemy = new Enemy(ENEMY_WIDTH * -1,FIRST_ROCKS_ROW_START+(r*83),velocity,ENEMY_WIDTH,ENEMY_HEIGHT);
    allEnemies.push(enemy);
 }
 

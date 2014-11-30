@@ -132,7 +132,7 @@ var Engine = (function(global) {
              console.log("n: " + n + "(should be 2-4)");
              var x = randomGenerator(0,7);
              console.log("star: x: "+TILE_WIDTH*x+" y:"+TILE_HEIGHT*n);
-             prize=new Prize(TILE_WIDTH*x+10,TILE_HEIGHT*n-10,'images/Star.png',PRIZE_WIDTH);
+             prize=new Prize(TILE_WIDTH*x+10,TILE_HEIGHT*n-10,'images/Star.png',PRIZE_WIDTH,PRIZE_HEIGHT);
              timer = randomGenerator(150,700);
              console.log("timer: " + timer);
           }
