@@ -9,8 +9,15 @@
 //       then bring it back to the bottom grass line.
 //       it could be just any object, but it could also be letters, randomly posted, to make real words
 //       words would have to be validated against an authority, say cambridge or wm
+// TODO: at game over, do NOT reset the player, leave it where it "died"
+// TODO: the "feature" of a random sprite could be 'inherent' to the Prize class
+//       bring the random choice of sprite inside the Prize object
 
 // some globals
+// canvas size
+CANVAS_WIDTH = 809;
+CANVAS_HEIGHT = 606;
+//
 var PLAYER_START_X = 0;
 var PLAYER_START_Y = 404;  
 var PLAYER_WIDTH=78;
@@ -21,6 +28,7 @@ var PLAYER_UP_MOVE=83;
 var PLAYER_DOWN_MOVE=83;
 var ENEMY_WIDTH=78;
 var TILE_HEIGHT=83;
+var TILE_WIDTH=99;
 // char_boy is aligned at 238 
 // char_boy is 101x171 pic size
 // rock is 101x83
@@ -35,29 +43,36 @@ var SECOND_ROCKS_ROW_START=238;
 var SECOND_ROCKS_COL_START=0;
 var THIRD_ROCKS_ROW_START=321;
 var THIRD_ROCKS_COL_START=0;
-var MAX_NUMBER_ENEMIES=5;
+var MAX_NUMBER_ENEMIES=0;
 // scoring
-var PLAYER_LIVES=1;
+var PLAYER_LIVES=100;
 var PLAYER_POINTS=0;
 // game engine control
 var GAME_OVER = false;
 // prizes
-var PRIZE_TIME_LIMIT=500;
+var PRIZE_WIDTH=73;
 
 // helpers
 // add 1 to cover the whole range min, max
 var randomGenerator = function (min,max) {
-   return Math.floor( (Math.random() * (max+1)) + min);
+   var realMax=max+1;
+   var n = Math.floor(Math.random() * (realMax - min)) + min;
+   // console.log("min: " + min + " max: " + max + " n: " + n);
+   if (n<min || n>max) {
+      console.log("ANOMALY! min: " + min + " max: " + max + " n: " + n);
+   }
+   return n;
 }
 
 // Enemies our player must avoid
 // adding v for velocity
-var Enemy = function(x,y,v) {
+var Enemy = function(x,y,v,w) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
    this.x = x;
    this.y = y;
    this.v = v;
+   this.width = w;
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/char-boy.png';
@@ -105,10 +120,11 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-var Player = function(x,y) {
+var Player = function(x,y,w) {
    this.sprite = 'images/char-cat-girl.png';
    this.x = x;
    this.y = y;
+   this.width=w
 }
 
 Player.prototype.update = function(dt) {
@@ -168,10 +184,18 @@ Player.prototype.handleInput = function(key) {
  location (x,y)
  sprite (it should be generated randomly)
 */
-var Prize = function(x,y,spriteName) {
+var Prize = function(x,y,spriteName,w) {
    this.x = x;
    this.y = y;
    this.sprite = spriteName;
+   this.width = w;
+   var img = new Image();
+   img.src = this.sprite;
+   img.onload = function(){
+     var height = img.height;
+     var width = img.width;
+     console.log("sprite width: " + width + " height: " + height);
+   }
 }
 
 /* 
@@ -179,14 +203,12 @@ TODO: do we need this ?
  what is update for a Prize? Not clear yet
 */
 Prize.prototype.update = function() {
-   console.log("update prize");
+   //console.log("update prize");
 }
 
 Prize.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
-
-
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
@@ -194,7 +216,7 @@ Prize.prototype.render = function() {
 // set the inception location for enemies to -1 * ENEMY_WIDTH
 // so that it appears to come from an invisible area before the 
 // left margin of the canvas
-var player = new Player(PLAYER_START_X,PLAYER_START_Y);
+var player = new Player(PLAYER_START_X,PLAYER_START_Y,PLAYER_WIDTH);
 var allEnemies = [];
 // create the enemies
 for (var i=0;i<MAX_NUMBER_ENEMIES; i++) {
@@ -202,7 +224,7 @@ for (var i=0;i<MAX_NUMBER_ENEMIES; i++) {
    var r = randomGenerator(0,2);
    var v = randomGenerator(1,5);
    // console.log("random: " + r);
-   var enemy = new Enemy(ENEMY_WIDTH * -1,FIRST_ROCKS_ROW_START+(r*83),v);
+   var enemy = new Enemy(ENEMY_WIDTH * -1,FIRST_ROCKS_ROW_START+(r*83),v,ENEMY_WIDTH);
    allEnemies.push(enemy);
 }
 

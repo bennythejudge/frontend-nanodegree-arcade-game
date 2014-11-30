@@ -38,12 +38,16 @@ var Engine = (function(global) {
 
     // this function checks if the sprite of 2 objects are overlapping in the 
     // canvas and returns True or False
-    // in input 2 objects of type Enemy and/or Player
-    var imagesOverlap = function (enemy,player) {
-       // console.log(obj1.x);
-       if ( (enemy.x >= player.x - PLAYER_WIDTH/2 && 
-          enemy.x<=player.x+PLAYER_WIDTH/2) && 
-          (enemy.y===player.y)) {
+    // in input 2 objects plus the width of obj2 as size reference
+    var imagesOverlap = function (obj1,obj2) {
+       //console.log("ob")
+       var distance=5;
+       // if ( (obj1.x >= player.x - ( obj2Width - distance) &&
+       // ( (if left margin of obj1 is within width of obj2) or 
+       if ( (obj1.x+obj1.width >= obj2.x + 5 && 
+            obj1.x+obj1.width <= obj2.x+obj2.width) &&
+            (obj1.y === obj2.y)) 
+       {
           console.log("CLASH at y: " + player.y);
           return true;
        };
@@ -100,7 +104,7 @@ var Engine = (function(global) {
     }
     
     // manage prizes
-    function doPrize() {
+    function createPrize() {
        // is a prize already active?
        if (timer>0) {
           timer--; 
@@ -113,15 +117,22 @@ var Engine = (function(global) {
           // throw a dice and show a prize for a period of time
           // if it's a 6 and no prize exists, go ahead
           var r = randomGenerator(1,100);
-          console.log
           if (r === 6 ) {
-             console.log("crea prize");
+             //console.log("crea prize");
              // TODO: need random coordinates and random type
               // 'images/gemblue.png',
               // 'images/gemgreen.png',
               // 'images/gemorange.png'
-             var row = randomGenerator(1,8)
-             prize = new Prize(200,235,'images/Star.png');
+             var row = randomGenerator(1,8);
+             // canvas is: 
+             // var tile_height = CANVAS_HEIGHT / 6;
+             // console.log("tile_height calcolata: " + tile_height);
+             // console.log("tile height constant: " + TILE_HEIGHT);
+             var n = randomGenerator(2,4);
+             console.log("n: " + n + "(should be 2-4)");
+             var x = randomGenerator(0,7);
+             console.log("star: x: "+TILE_WIDTH*x+" y:"+TILE_HEIGHT*n);
+             prize=new Prize(TILE_WIDTH*x+10,TILE_HEIGHT*n-10,'images/Star.png',PRIZE_WIDTH);
              timer = randomGenerator(150,700);
              console.log("timer: " + timer);
           }
@@ -139,13 +150,34 @@ var Engine = (function(global) {
      */
     function update(dt) {
        if (!GAME_OVER) {
-          doPrize();
+          createPrize();
           updateEntities(dt);
           checkCollisions();
+          if (timer>0) {
+             checkPrizeCollections();
+          }
        }
     }
+    
+    // checks if the Player has collected a prize
+    function checkPrizeCollections() {
+       //console.log("checking prize collections");
+       console.log("player.x: " + player.x + " player.y: " + player.y);
+       console.log("prize.x: " + prize.x + " prize.y: " + prize.y);
+       var t = imagesOverlap(player,prize);
+       if (t === true) {
+          timer=0;
+          PLAYER_POINTS++;
+          console.log("points: " + PLAYER_POINTS);
+          
+       }
+       
+    }
+    
     /* check for collisions */
     function checkCollisions() {
+       // to stop the forEach i will use an exception
+       // the break statement is not available in this case
        if(typeof StopIteration == "undefined") {
         StopIteration = new Error("StopIteration");
        }
@@ -263,7 +295,8 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+       // noop
+       PLAYER_POINTS=0;
     }
 
     /* Go ahead and load all of the images we know we're going to need to
