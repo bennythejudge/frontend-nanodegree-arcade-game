@@ -1,3 +1,11 @@
+// TODO: implement a "start" button. 
+// alternatives:
+// 1) a button in the HTML that contains some js that sets the STARTED to true - is that possible?
+// 2) a button in the canvas - maybe it could be an infinite loop of rendering with STARTED=false
+//    until the button is pressed and then STARTED is set to true and this starts the game.
+// GAMEOVER must set things so that started goes back to false and it's possible to start the game
+// should the start button become "Restart game" while the game is active?
+//
 // TODO: in engine.js, at line 190, add a health bar for player
 //       fill it in red as the player loses lives. it must be in proportion
 //       to the length of the bar and to the total number of lives
@@ -41,21 +49,22 @@ var TILE_WIDTH=99;
 // char_boy is 101x171 pic size
 // rock is 101x83
 // char_boy is 68x78
-var RIGHT_BORDER=809;
-var LEFT_BORDER=0;
-var TOP_BORDER=83;
-var DOWN_BORDER=415;
-var FIRST_ROCKS_ROW_START=155;
-var FIRST_ROCKS_COL_START=0;
-var SECOND_ROCKS_ROW_START=238;
-var SECOND_ROCKS_COL_START=0;
-var THIRD_ROCKS_ROW_START=321;
-var THIRD_ROCKS_COL_START=0;
+var RIGHT_BORDER = 809;
+var LEFT_BORDER = 0;
+var TOP_BORDER = 83;
+var DOWN_BORDER = 415;
+var FIRST_ROCKS_ROW_START = 155;
+var FIRST_ROCKS_COL_START = 0;
+var SECOND_ROCKS_ROW_START = 238;
+var SECOND_ROCKS_COL_START = 0;
+var THIRD_ROCKS_ROW_START = 321;
+var THIRD_ROCKS_COL_START = 0;
 // game engine control
 var GAME_OVER = false;
+var STARTED = false;
 // prizes
-var PRIZE_WIDTH=73;
-var PRIZE_HEIGHT=68;
+var PRIZE_WIDTH = 73;
+var PRIZE_HEIGHT = 68;
 
 // helpers
 // add 1 to cover the whole range min, max

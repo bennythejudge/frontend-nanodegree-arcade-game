@@ -2,6 +2,6 @@ body {
     text-align: center;
 }
 
-/*.score {
+#score, #lives, #secondline, #startgame {
    display: none;
-}*/
+}

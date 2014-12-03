@@ -15,6 +15,10 @@
  */
 
 var Engine = (function(global) {
+   
+   
+   console.log("point of entry");
+   
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
      * set the canvas elements height/width and add it to the DOM.
@@ -86,6 +90,7 @@ var Engine = (function(global) {
     // game over
     function gameOver() {
        GAME_OVER=true;
+       STARTED=false;
        // console.log("inside gameOver: " + ctx);
        // write GameOVer
     }
@@ -105,6 +110,13 @@ var Engine = (function(global) {
          * would be the same for everyone (regardless of how fast their
          * computer is) - hurray time!
          */
+       
+       if (!STARTED || GAME_OVER) {
+          doc.getElementById("startgame").style.display = 'block';
+          doc.getElementById("startgame").innerHTML = "<input>Enter</input>";
+          return;
+       }
+       
         var now = Date.now(),
             dt = (now - lastTime) / 1000.0;
         /* Call our update/render functions, pass along the time delta to
@@ -179,7 +191,7 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
-       if (!GAME_OVER) {
+       if (!GAME_OVER && STARTED) {
           createPrize();
           updateEntities(dt);
           checkCollisions();
@@ -198,12 +210,7 @@ var Engine = (function(global) {
        if (t === true) {
           timer=0;
           PLAYER_POINTS++;
-          // doc.getElementById("score").innerHTML = "Score: " + PLAYER_POINTS;
-          // doc.getElementById("lives").innerHTML = "Lives: " + PLAYER_LIVES;
-          // console.log("points: " + PLAYER_POINTS);
-          
        }
-       
     }
     
     /* check for collisions between player and enemies*/
@@ -241,7 +248,7 @@ var Engine = (function(global) {
     // this is the "heart" of the game
     function updateEntities(dt) {
        //console.log("inside updateEntities");
-       if (! GAME_OVER) {
+       if (! GAME_OVER && STARTED) {
           allEnemies.forEach(function(enemy) {
               enemy.update(dt);
           });
@@ -304,9 +311,14 @@ var Engine = (function(global) {
            //console.log(t);
            ctx.fillText(msg, (canvas.width - t)/2, ((canvas.height-48)/2)+48);
         }
-        // display scores and lives
-        doc.getElementById("score").innerHTML = "Score: " + PLAYER_POINTS;
-        doc.getElementById("lives").innerHTML = "Lives: " + PLAYER_LIVES;
+        
+        if (STARTED) {
+           // display scores and lives
+           doc.getElementById("score").style.display = 'block';
+           doc.getElementById("lives").style.display = 'block';
+           doc.getElementById("score").innerHTML = "Score: " + PLAYER_POINTS;
+           doc.getElementById("lives").innerHTML = "Lives: " + PLAYER_LIVES;
+        }
     }
 
     /* This function is called by the render function and is called on each game
@@ -314,6 +326,11 @@ var Engine = (function(global) {
      * on your enemy and player entities within app.js
      */
     function renderEntities() {
+       if (!STARTED) {
+          return;
+       }
+       
+       
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
@@ -332,11 +349,12 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-       // noop
        PLAYER_POINTS=0;
        PLAYER_LIVES=5;
        GAME_OVER=false;
     }
+
+    console.log("second point of control");
 
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when
@@ -360,6 +378,6 @@ var Engine = (function(global) {
     /* Assign the canvas' context object to the global variable (the window
      * object when run in a browser) so that developer's can use it more easily
      * from within their app.js files.
-     */
+    */
     global.ctx = ctx;
 })(this);
