@@ -2,13 +2,17 @@ body {
     text-align: center;
 }
 
+.topline, .my-toggle-text {
+   display: inline-block;
+}
+
 #score, #lives, #secondline, #startgame {
    display: none;
 }
 
-#instructions {
+/*#instructions {
    display: block;
    padding: 80px;
    margin-right: 50px;
    margin-left: 50px;
-}
+}*/

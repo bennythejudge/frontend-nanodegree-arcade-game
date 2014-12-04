@@ -199,7 +199,7 @@ var Engine = (function(global) {
                       TILE_HEIGHT*n-10,
                       'images/Star.png',
                       PRIZE_WIDTH,PRIZE_HEIGHT);
-             r = randomGenerator(6,15);
+             r = randomGenerator(6,18);
              console.log(r);
              prize.starttime = new Date().getTime() / 1000;
              prize.lifetime = r;
@@ -222,7 +222,6 @@ var Engine = (function(global) {
           doPrize();
           updateEntities(dt);
           checkCollisions();
-          // if (timer>0) {
           if (prize) {
              checkPrizeCollections();
           }
