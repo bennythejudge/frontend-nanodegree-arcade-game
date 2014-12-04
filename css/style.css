@@ -6,6 +6,9 @@ body {
    display: none;
 }
 
-.instructions {
-   display: none;
+#instructions {
+   display: block;
+   padding: 80px;
+   margin-right: 50px;
+   margin-left: 50px;
 }
