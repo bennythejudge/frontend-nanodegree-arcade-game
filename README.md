@@ -1,3 +1,6 @@
+Udacity - Front-End Web Programming
+By Benedetto Lo Giudice
+
 frontend-nanodegree-arcade-game
 ===============================
 
@@ -15,5 +18,6 @@ References for project 3 Udacity
 quoted within the Canvas course 
 2) https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
 for collision detection
+
 
 
