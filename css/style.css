@@ -5,3 +5,7 @@ body {
 #score, #lives, #secondline, #startgame {
    display: none;
 }
+
+.instructions {
+   display: none;
+}

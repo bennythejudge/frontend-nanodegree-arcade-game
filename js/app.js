@@ -23,9 +23,12 @@
 // TODO: search for any hardcoded value and remove it
 
 // some globals
+// grid
+var NROWS = 6;
+var NCOLS = 8;
 // canvas size
-CANVAS_WIDTH = 809;
-CANVAS_HEIGHT = 606;
+var CANVAS_WIDTH = 809;
+var CANVAS_HEIGHT = 606;
 // player
 var PLAYER_START_X = 0;
 var PLAYER_START_Y = 404;  
@@ -53,7 +56,7 @@ var RIGHT_BORDER = 809;
 var LEFT_BORDER = 0;
 var TOP_BORDER = 83;
 var DOWN_BORDER = 415;
-var FIRST_ROCKS_ROW_START = 155;
+var ENEMY_ROW_START = 155;
 var FIRST_ROCKS_COL_START = 0;
 var SECOND_ROCKS_ROW_START = 238;
 var SECOND_ROCKS_COL_START = 0;
@@ -116,7 +119,7 @@ Enemy.prototype.update = function(dt) {
          // random line
          var r;
          do {
-            r = FIRST_ROCKS_ROW_START + (randomGenerator(0,2) * TILE_HEIGHT);
+            r = ENEMY_ROW_START + (randomGenerator(0,2) * TILE_HEIGHT);
          } while (r===this.y);
          this.y = r;
          // random speed
@@ -144,6 +147,8 @@ var Player = function(x,y,w,h) {
    this.y = y;
    this.width=w
    this.height=h;
+   this.lives=PLAYER_LIVES;
+   this.score=0;
 }
 
 Player.prototype.update = function(dt) {
@@ -203,6 +208,7 @@ Player.prototype.handleInput = function(key) {
  location (x,y)
  sprite (it should be generated randomly)
  adding h for height
+ adding the timer as an attribute
 */
 var Prize = function(x,y,spriteName,w,h) {
    this.x = x;
@@ -210,13 +216,6 @@ var Prize = function(x,y,spriteName,w,h) {
    this.sprite = spriteName;
    this.width = w;
    this.height=h;
-   var img = new Image();
-   img.src = this.sprite;
-   // img.onload = function(){
-   //   var height = img.height;
-   //   var width = img.width;
-   //   console.log("sprite width: " + width + " height: " + height);
-   // }
 }
 
 /* 
@@ -245,7 +244,7 @@ for (var i=0;i<MAX_NUMBER_ENEMIES; i++) {
    var r = randomGenerator(0,2);
    var velocity = randomGenerator(1,5);
    // console.log("random: " + r);
-   var enemy = new Enemy(ENEMY_WIDTH * -1,FIRST_ROCKS_ROW_START+(r*83),velocity,ENEMY_WIDTH,ENEMY_HEIGHT);
+   var enemy = new Enemy(ENEMY_WIDTH * -1,ENEMY_ROW_START+(r*83),velocity,ENEMY_WIDTH,ENEMY_HEIGHT);
    allEnemies.push(enemy);
 }
 

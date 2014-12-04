@@ -13,12 +13,7 @@
  * the canvas' context (ctx) object globally available to make writing app.js
  * a little simpler to work with.
  */
-
 var Engine = (function(global) {
-   
-   
-   console.log("point of entry");
-   
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
      * set the canvas elements height/width and add it to the DOM.
@@ -39,32 +34,51 @@ var Engine = (function(global) {
     // a timer for prizes
     var timer=0;
     var prize;
+    var StartOrRestartGame = function() {
+       // set the value of the button to "Restart Game"
+       btn=doc.getElementById("game-button");
+       if (btn === null) {
+          console.log("button is null!");
+       } else {
+          btn.value="Restart Game!";
+          // console.log("button is NOT null!");
+       }
+       // reset the player to new game
+       player = new Player(PLAYER_START_X,PLAYER_START_Y,PLAYER_WIDTH,PLAYER_HEIGHT);
+       // reset the enemies
+       allEnemies = [];
+       // create the enemies
+       for (var i=0;i<MAX_NUMBER_ENEMIES; i++) {
+          // pick a random line (1, 2 or 3)
+          var r = randomGenerator(0,2);
+          var velocity = randomGenerator(1,5);
+          // console.log("random: " + r);
+          var enemy = new Enemy(ENEMY_WIDTH * -1, ENEMY_ROW_START+(r*83),velocity,ENEMY_WIDTH,ENEMY_HEIGHT);
+          allEnemies.push(enemy);
+       }
+       STARTED = true;
+       GAME_OVER = false;
+       init();
+    }
+
+    // update lives and scores in the HTML page
+    var updateLivesAndScores = function() {
+       doc.getElementById("score").style.display = 'block';
+       doc.getElementById("lives").style.display = 'block';
+       doc.getElementById("score").innerHTML = "Score: " + player.score;
+       doc.getElementById("lives").innerHTML = "Lives: " + player.lives;
+    }
 
     /* new collision detection function */
-    
     var collisionDetection = function(object1,object2) {
-       // console.log("obj1: (" + object1.x + "," + object1.y + "," + object1.width + "," + object1.height + ")" );
-       // console.log("obj2: (" + object2.x + "," + object2.y + "," + object2.width + "," + object2.height + ")" );
-       // se la distanza assoluta tra x1 e x2 < 
-       // my own bounding box collision detection
-       // if (
-       //    (object2.x >= object1.x && object2.x <= (object1.x + object1.width) &&
-       //      object2.y >= object1.y && object2.y <= (object1.y + object1.height)
-       //    ) ||
-       //    (
-       //       object1.x >= object2.x && object1.x <= (object2.x + object2.width) &&
-       //      object1.y >= object2.y && object1.y <= (object2.y + object2.height)
-       //    )
-       //    )
+       // detect if the 2 object collide using the axis-aligned bounding box
        if (object1.x < object2.x + object2.width &&
           object1.x + object1.width > object2.x &&
           object1.y < object2.y + object2.height &&
           object1.height + object1.y > object2.y) 
        {
-          //console.log(object1 + " collides with " + object2);
           return true;
        } else {
-          // console.log(object1 + " DOES NOT collides with " + object2);
           return false;
        }
     }
@@ -89,17 +103,17 @@ var Engine = (function(global) {
 
     // game over
     function gameOver() {
+       console.log("inside gameOver");
        GAME_OVER=true;
        STARTED=false;
-       // console.log("inside gameOver: " + ctx);
-       // write GameOVer
     }
 
-    // reset the player to starting point
-    function resetPlayer() {
+    // reset the player's position to starting point
+    function resetPlayerPosition() {
        player.x=PLAYER_START_X;
        player.y=PLAYER_START_Y;
     }
+
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
      */
@@ -110,10 +124,8 @@ var Engine = (function(global) {
          * would be the same for everyone (regardless of how fast their
          * computer is) - hurray time!
          */
-       
+       // if the game has not started or if it is over, do nothing
        if (!STARTED || GAME_OVER) {
-          doc.getElementById("startgame").style.display = 'block';
-          doc.getElementById("startgame").innerHTML = "<input>Enter</input>";
           return;
        }
        
@@ -139,11 +151,11 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
-        reset();
+        // reset();
         lastTime = Date.now();
         main();
     }
-    
+
     // manage prizes
     function createPrize() {
        // is a prize already active?
@@ -174,13 +186,12 @@ var Engine = (function(global) {
              var x = randomGenerator(0,7);
              // console.log("star: x: "+TILE_WIDTH*x+" y:"+TILE_HEIGHT*n);
              prize=new Prize(TILE_WIDTH*x+10,TILE_HEIGHT*n-10,'images/Star.png',PRIZE_WIDTH,PRIZE_HEIGHT);
-             // prize=new Prize(693,332,'images/Star.png',PRIZE_WIDTH,PRIZE_HEIGHT);
              timer = randomGenerator(150,700);
              // console.log("timer: " + timer);
           }
        }
     }
-    
+
     /* This function is called by main (our game loop) and itself calls all
      * of the functions which may need to update entity's data. Based on how
      * you implement your collision detection (when two entities occupy the
@@ -191,6 +202,7 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
+       // if the game is over or not started only, otherwise do nothing
        if (!GAME_OVER && STARTED) {
           createPrize();
           updateEntities(dt);
@@ -200,7 +212,7 @@ var Engine = (function(global) {
           }
        }
     }
-    
+
     // checks if the Player has collected a prize
     function checkPrizeCollections() {
        //console.log("checking prize collections");
@@ -209,24 +221,25 @@ var Engine = (function(global) {
        var t = collisionDetection(prize,player);
        if (t === true) {
           timer=0;
-          PLAYER_POINTS++;
+          player.score++;
        }
     }
-    
+
     /* check for collisions between player and enemies*/
     function checkCollisions() {
        // using an exception to stop the forEach loop
        // the break statement is not available in this case
-       if(typeof StopIteration == "undefined") {
+       if (typeof StopIteration == "undefined") {
         StopIteration = new Error("StopIteration");
        }
-       try 
+       try
        {
           allEnemies.forEach(function(enemy) {
             if (collisionDetection(enemy,player)) {
-                resetPlayer();
-                PLAYER_LIVES--;
-                if (PLAYER_LIVES===0) {
+                resetPlayerPosition();
+                player.lives--;
+                if (player.lives===0) {
+                   updateLivesAndScores();
                    gameOver();
                    throw StopIteration;
                 }
@@ -244,7 +257,7 @@ var Engine = (function(global) {
      * the data/properties related to  the object. Do your drawing in your
      * render methods.
      */
-    
+
     // this is the "heart" of the game
     function updateEntities(dt) {
        //console.log("inside updateEntities");
@@ -279,10 +292,9 @@ var Engine = (function(global) {
                 'images/grass-block.png',   // Row 1 of 2 of grass
                 'images/grass-block.png'    // Row 2 of 2 of grass
             ],
-            numRows = 6,
-            numCols = 8,
+            numRows = NROWS,
+            numCols = NCOLS,
             row, col;
-
         /* Loop through the number of rows and columns we've defined above
          * and, using the rowImages array, draw the correct image for that
          * portion of the "grid"
@@ -300,8 +312,6 @@ var Engine = (function(global) {
             }
         }
         // TODO: add here the health bar for player
-        
-        
         renderEntities();
         if (GAME_OVER) {
            ctx.fillStyle = "blue";
@@ -311,13 +321,9 @@ var Engine = (function(global) {
            //console.log(t);
            ctx.fillText(msg, (canvas.width - t)/2, ((canvas.height-48)/2)+48);
         }
-        
         if (STARTED) {
            // display scores and lives
-           doc.getElementById("score").style.display = 'block';
-           doc.getElementById("lives").style.display = 'block';
-           doc.getElementById("score").innerHTML = "Score: " + PLAYER_POINTS;
-           doc.getElementById("lives").innerHTML = "Lives: " + PLAYER_LIVES;
+           updateLivesAndScores();
         }
     }
 
@@ -329,8 +335,6 @@ var Engine = (function(global) {
        if (!STARTED) {
           return;
        }
-       
-       
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
@@ -349,13 +353,21 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-       PLAYER_POINTS=0;
-       PLAYER_LIVES=5;
-       GAME_OVER=false;
     }
 
     console.log("second point of control");
 
+    // the start button
+    if (GAME_OVER || ! STARTED) {
+       var btn = doc.createElement("input");
+       btn.type = "button";
+       btn.value = "Start Game";
+       btn.id = "game-button";
+       btn.onclick = StartOrRestartGame;
+       doc.getElementById("startgame").appendChild(btn);
+       doc.getElementById("startgame").style.display = 'block';
+       // return;
+    }
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when
      * all of these images are properly loaded our game will start.
