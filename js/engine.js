@@ -24,16 +24,14 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
 
-    // canvas.width = 505;
-    // canvas.height = 606;
     // increased the size of the canvas
-    canvas.width = 809;
-    canvas.height = 606;
+    canvas.width = CANVAS_WIDTH;
+    canvas.height = CANVAS_HEIGHT;
     doc.body.appendChild(canvas);
 
     // a timer for prizes
-    var timer=0;
-    var prize;
+    // var timer=0;
+    var prize=null;
     var StartOrRestartGame = function() {
        // set the value of the button to "Restart Game"
        btn=doc.getElementById("game-button");
@@ -44,7 +42,10 @@ var Engine = (function(global) {
           // console.log("button is NOT null!");
        }
        // reset the player to new game
-       player = new Player(PLAYER_START_X,PLAYER_START_Y,PLAYER_WIDTH,PLAYER_HEIGHT);
+       player = new Player(PLAYER_START_X,
+                         PLAYER_START_Y,
+                         PLAYER_WIDTH,
+                         PLAYER_HEIGHT);
        // reset the enemies
        allEnemies = [];
        // create the enemies
@@ -58,6 +59,8 @@ var Engine = (function(global) {
        }
        STARTED = true;
        GAME_OVER = false;
+       // timer=0;
+       prize=null;
        init();
     }
 
@@ -128,22 +131,21 @@ var Engine = (function(global) {
        if (!STARTED || GAME_OVER) {
           return;
        }
-       
-        var now = Date.now(),
-            dt = (now - lastTime) / 1000.0;
-        /* Call our update/render functions, pass along the time delta to
-         * our update function since it may be used for smooth animation.
-         */
-        update(dt);
-        render();
-        /* Set our lastTime variable which is used to determine the time delta
+       var now = Date.now(),
+           dt = (now - lastTime) / 1000.0;
+       /* Call our update/render functions, pass along the time delta to
+        * our update function since it may be used for smooth animation.
+        */
+       update(dt);
+       render();
+       /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
          */
-        lastTime = now;
-        /* Use the browser's requestAnimationFrame function to call this
+       lastTime = now;
+       /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        win.requestAnimationFrame(main);
+       win.requestAnimationFrame(main);
     };
 
     /* This function does some initial setup that should only occur once,
@@ -151,25 +153,37 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
-        // reset();
-        lastTime = Date.now();
-        main();
+      // reset();
+      lastTime = Date.now();
+      main();
     }
 
     // manage prizes
-    function createPrize() {
+    /*
+    * doPrize()
+    * this function handles the Prize
+    * if a prize does not exists, it creates one
+    * using random values for location and life
+    * if a prize exists, it decreases a counter
+    * when the counter reaches zero, the prize is destroyed.
+    */
+    function doPrize() {
        // is a prize already active?
-       if (timer>0) {
-          timer--; 
-          if (timer === 0) {
-             // timeout, retire prize
-             // console.log("deleting the prize");
-             prize={};
+       // if yes, check if it's been active for
+       // the expected random number of seconds
+       if (prize) {
+          var seconds = new Date().getTime() / 1000;
+          var diff = seconds - prize.starttime;
+          var countdown = prize.lifetime - diff;
+          doc.getElementById("timer").innerHTML = "Prize Count Down: " + countdown.toPrecision(2);
+          if (countdown <= 0.005) {
+             // retire prize
+             prize = null;
           }
        } else {
-          // throw a dice and show a prize for a period of time
-          // if it's a 6 and no prize exists, go ahead
-          var r = randomGenerator(1,100);
+          // throw a dice and if you get a 6 show a prize for a 
+          // random period of time
+          var r = randomGenerator(1,150);
           if (r === 6 ) {
              //console.log("crea prize");
              // TODO: need random coordinates and random type
@@ -177,17 +191,18 @@ var Engine = (function(global) {
               // 'images/gemgreen.png',
               // 'images/gemorange.png'
              var row = randomGenerator(1,8);
-             // canvas is: 
-             // var tile_height = CANVAS_HEIGHT / 6;
-             // console.log("tile_height calcolata: " + tile_height);
-             // console.log("tile height constant: " + TILE_HEIGHT);
              var n = randomGenerator(2,4);
              // console.log("n: " + n + "(should be 2-4)");
              var x = randomGenerator(0,7);
              // console.log("star: x: "+TILE_WIDTH*x+" y:"+TILE_HEIGHT*n);
-             prize=new Prize(TILE_WIDTH*x+10,TILE_HEIGHT*n-10,'images/Star.png',PRIZE_WIDTH,PRIZE_HEIGHT);
-             timer = randomGenerator(150,700);
-             // console.log("timer: " + timer);
+             prize = new Prize(TILE_WIDTH*x+10,
+                      TILE_HEIGHT*n-10,
+                      'images/Star.png',
+                      PRIZE_WIDTH,PRIZE_HEIGHT);
+             r = randomGenerator(6,15);
+             console.log(r);
+             prize.starttime = new Date().getTime() / 1000;
+             prize.lifetime = r;
           }
        }
     }
@@ -204,10 +219,11 @@ var Engine = (function(global) {
     function update(dt) {
        // if the game is over or not started only, otherwise do nothing
        if (!GAME_OVER && STARTED) {
-          createPrize();
+          doPrize();
           updateEntities(dt);
           checkCollisions();
-          if (timer>0) {
+          // if (timer>0) {
+          if (prize) {
              checkPrizeCollections();
           }
        }
@@ -220,7 +236,8 @@ var Engine = (function(global) {
        // console.log("prize.x: " + prize.x + " prize.y: " + prize.y);
        var t = collisionDetection(prize,player);
        if (t === true) {
-          timer=0;
+          // timer=0;
+          prize=null;
           player.score++;
        }
     }
@@ -266,7 +283,8 @@ var Engine = (function(global) {
               enemy.update(dt);
           });
           player.update();
-          if (timer>0) { 
+          // if (timer>0) {
+          if (prize) { 
              prize.update();
           }
        }
@@ -338,7 +356,8 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
-       if (timer>0) {
+       // if (timer>0) {
+       if (prize) {
           prize.render();
        }
         allEnemies.forEach(function(enemy) {

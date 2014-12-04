@@ -1,11 +1,3 @@
-// TODO: implement a "start" button. 
-// alternatives:
-// 1) a button in the HTML that contains some js that sets the STARTED to true - is that possible?
-// 2) a button in the canvas - maybe it could be an infinite loop of rendering with STARTED=false
-//    until the button is pressed and then STARTED is set to true and this starts the game.
-// GAMEOVER must set things so that started goes back to false and it's possible to start the game
-// should the start button become "Restart game" while the game is active?
-//
 // TODO: in engine.js, at line 190, add a health bar for player
 //       fill it in red as the player loses lives. it must be in proportion
 //       to the length of the bar and to the total number of lives
@@ -208,7 +200,6 @@ Player.prototype.handleInput = function(key) {
  location (x,y)
  sprite (it should be generated randomly)
  adding h for height
- adding the timer as an attribute
 */
 var Prize = function(x,y,spriteName,w,h) {
    this.x = x;
@@ -216,6 +207,8 @@ var Prize = function(x,y,spriteName,w,h) {
    this.sprite = spriteName;
    this.width = w;
    this.height=h;
+   this.starttime=0;
+   this.lifetime=0;
 }
 
 /* 
