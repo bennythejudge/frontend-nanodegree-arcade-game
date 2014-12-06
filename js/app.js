@@ -32,7 +32,10 @@ var PLAYER_UP_MOVE=83;
 var PLAYER_DOWN_MOVE=83;
 // player lives and scoring
 var PLAYER_LIVES=5;
-var PLAYER_POINTS=0;
+
+// TODO: delete following
+// var PLAYER_POINTS=0;
+
 // enemy
 var ENEMY_WIDTH=78;
 var ENEMY_HEIGHT=68;
@@ -89,6 +92,8 @@ var Enemy = function(x,y,v,w,h) {
     this.sprite = 'images/char-boy.png';
     this.speed = 0;
     this.startLine = 0;
+    // velocity increase multiplier
+    this.velocityIncrease = 1;
 }
 
 // Update the enemy's position, required method for game
@@ -97,17 +102,14 @@ Enemy.prototype.update = function(dt) {
    // You should multiply any movement by the dt parameter
    // which will ensure the game runs at the same speed for
    // all computers.
-   // my note: enemies are generated at a random line of the 3 rockie tracks
-   // they then launch to the right at random speed (within a range)
+   // my note: enemies are generated at a random line, with a 
+   // random speed (within a range), moving from left to right.
    // they are reset when they reach the right margin
-   // my note: need to animate the enemies
-   //console.log("inside update Enemy");
-   // console.log(this.x);
-   // console.log(RIGHT_BORDER-(ENEMY_WIDTH));
+   // the speed increases by 2% at every update
    if (!GAME_OVER) {
       if (this.x > RIGHT_BORDER) {
          // reset this entity
-         this.x=ENEMY_WIDTH * -1;
+         this.x=this.width * -1;
          // random line
          var r;
          do {
@@ -116,6 +118,9 @@ Enemy.prototype.update = function(dt) {
          this.y = r;
          // random speed
          this.v = randomGenerator(1,5);
+         this.v = this.v * this.velocityIncrease;
+         this.velocityIncrease = this.velocityIncrease * 1.02;
+         console.log('velocity: ' + this.v);
          // go!
       } else {
          this.x+=101*dt*this.v;
