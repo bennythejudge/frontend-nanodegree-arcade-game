@@ -211,7 +211,7 @@ var Prize = function(x,y,spriteName,w,h) {
    this.lifetime=0;
 }
 
-/* 
+/*
 TODO: do we need this ?
  what is update for a Prize? Not clear yet
 */
