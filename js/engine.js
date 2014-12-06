@@ -61,6 +61,7 @@ var Engine = (function(global) {
        GAME_OVER = false;
        // timer=0;
        prize=null;
+       doc.getElementById("timer").innerHTML = "Prize coming soon!";
        init();
     }
 
@@ -175,16 +176,20 @@ var Engine = (function(global) {
           var seconds = new Date().getTime() / 1000;
           var diff = seconds - prize.starttime;
           var countdown = prize.lifetime - diff;
-          doc.getElementById("timer").innerHTML = "Prize Count Down: " + countdown.toPrecision(2);
-          if (countdown <= 0.005) {
+          doc.getElementById("timer").innerHTML = "Prize Count Down: " + countdown.toFixed(0);
+          if (countdown <= 0) {
+             // because the counter could go negative due to the 
+             // dynamic of rendering the canvas, we cheat..
+             doc.getElementById("timer").innerHTML = "Sorry you missed that!";
              // retire prize
              prize = null;
           }
        } else {
           // throw a dice and if you get a 6 show a prize for a 
           // random period of time
-          var r = randomGenerator(1,150);
-          if (r === 6 ) {
+          var r1 = randomGenerator(1,150);
+          var r2 = randomGenerator(1,150);
+          if (r1+r2 === 150 ) {
              //console.log("crea prize");
              // TODO: need random coordinates and random type
               // 'images/gemblue.png',
@@ -238,6 +243,7 @@ var Engine = (function(global) {
           // timer=0;
           prize=null;
           player.score++;
+          doc.getElementById("timer").innerHTML = "Well done!";
        }
     }
 
