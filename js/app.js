@@ -1,6 +1,12 @@
-// TODO: search for any hardcoded value and remove it
-
-// some globals
+/* 
+----------------------------------------------
+apps.js
+this file contains global constants, global variables
+and the Objects.
+It performs the creation of new entities for the first time
+It contains the event listener for keyboard events
+--------------------------------------------------
+*/
 // grid
 var NROWS = 6;
 var NCOLS = 8;
@@ -10,41 +16,29 @@ var CANVAS_HEIGHT = 606;
 // player
 var PLAYER_START_X = 0;
 var PLAYER_START_Y = 404;
-// player dimensions
-// var PLAYER_WIDTH=78;
-// var PLAYER_HEIGHT=68;
-var PLAYER_WIDTH=101;
-var PLAYER_HEIGHT=171;
-//
+// entities dimensions
+var ENTITY_WIDTH=101;
+var ENTITY_HEIGHT=171;
+// player control
 var PLAYER_RIGHT_MOVE=101;
 var PLAYER_LEFT_MOVE=101;
 var PLAYER_UP_MOVE=83;
 var PLAYER_DOWN_MOVE=83;
-// player lives and scoring
 var PLAYER_LIVES=5;
-// enemy
-var ENEMY_WIDTH=PLAYER_WIDTH;
-var ENEMY_HEIGHT=PLAYER_HEIGHT;
-// var ENEMY_WIDTH=78;
-// var ENEMY_HEIGHT=68;
-var MAX_NUMBER_ENEMIES=1;
+// enemies control
+var MAX_NUMBER_ENEMIES=6;
 // tiles
 var TILE_HEIGHT=83;
 var TILE_WIDTH=99;
 // char_boy is aligned at 238 
 // char_boy is 101x171 pic size
 // rock is 101x83
-// char_boy is 68x78
+// board dimensions
 var RIGHT_BORDER = 809;
 var LEFT_BORDER = 0;
 var TOP_BORDER = 83;
-var DOWN_BORDER = 415;
+var BOTTOM_BORDER = 415;
 var ENEMY_ROW_START = 155;
-var FIRST_ROCKS_COL_START = 0;
-var SECOND_ROCKS_ROW_START = 238;
-var SECOND_ROCKS_COL_START = 0;
-var THIRD_ROCKS_ROW_START = 321;
-var THIRD_ROCKS_COL_START = 0;
 // this value is used to make entities collide at a shorter
 // distance
 var COLLISION_DIVIDER=2.5
@@ -55,10 +49,19 @@ var STARTED = false;
 var PRIZE_WIDTH = 73;
 var PRIZE_HEIGHT = 68;
 
-// -----------------------------------------
-// helpers
-// add 1 to cover the whole range min, max
-// -----------------------------------------
+/* 
+----------------------------------------------
+helpers
+--------------------------------------------------
+*/
+
+/* 
+----------------------------------------------
+randomGenerator
+a random integer generator in the range min - max
+(both included)
+--------------------------------------------------
+*/
 var randomGenerator = function (min,max) {
    var realMax=max+1;
    var n = Math.floor(Math.random() * (realMax - min)) + min;
@@ -69,9 +72,11 @@ var randomGenerator = function (min,max) {
    return n;
 }
 
-// Enemies that the player must avoid
-// adding v for velocity
-// adding w for width and h for height
+/* 
+----------------------------------------------
+Objects
+--------------------------------------------------
+*/
 var Enemy = function(x,y,v,w,h) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
@@ -142,9 +147,6 @@ var Player = function(x,y,w,h) {
    this.score=0;
 }
 
-Player.prototype.update = function(dt) {
-}
-
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
@@ -155,7 +157,6 @@ Player.prototype.handleInput = function(key) {
    switch(key) {
       // move right but prevent the character to go outside the right margin
       case "right":
-         // console.log("RIGHT_BORDER: " + RIGHT_BORDER + " x+halfplayer: " + (this.x+PLAYER_WIDTH/2) + " rightborder - half width of the player: " + (RIGHT_BORDER-(PLAYER_WIDTH/2)));
          if (this.x+PLAYER_RIGHT_MOVE>RIGHT_BORDER-(PLAYER_RIGHT_MOVE/2)) {
             //alert("can't go any further right")
          } else {
@@ -164,7 +165,6 @@ Player.prototype.handleInput = function(key) {
          break;
       // move left but prevent the sprite to go beyond the left margin
       case "left":
-         // console.log("LEFT_BORDER: " + LEFT_BORDER + " x+halfplayer: " + (this.x+PLAYER_WIDTH/2));
          if (this.x-PLAYER_LEFT_MOVE/2<LEFT_BORDER) {
             // alert("can't go any further left");
          } else {
@@ -182,8 +182,8 @@ Player.prototype.handleInput = function(key) {
          break;
       // move down but not below the canvas
       case "down":
-         // console.log("DOWN: " + DOWN_BORDER + " y: " + this.y);
-         if (this.y+PLAYER_DOWN_MOVE>DOWN_BORDER) {
+         // console.log("DOWN: " + BOTTOM_BORDER + " y: " + this.y);
+         if (this.y+PLAYER_DOWN_MOVE>BOTTOM_BORDER) {
             // alert("can't go any further down");
          } else {
             this.y+=PLAYER_DOWN_MOVE;
@@ -192,13 +192,6 @@ Player.prototype.handleInput = function(key) {
    }
 }
 
-/*
- add another class for the prizes
- a prize attributes are:
- location (x,y)
- sprite (it should be generated randomly)
- adding h for height
-*/
 var Prize = function(x,y,spriteName,w,h) {
    this.x = x;
    this.y = y;
@@ -216,11 +209,11 @@ Prize.prototype.render = function() {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-// set the inception location for enemies to -1 * ENEMY_WIDTH
+// set the inception location for enemies to -1 * ENTITY_WIDTH
 // so that it appears to come from an invisible area before the 
 // left margin of the canvas
-var player = new Player(PLAYER_START_X,PLAYER_START_Y,PLAYER_WIDTH,PLAYER_HEIGHT);
-// console.log("w: " + PLAYER_WIDTH + " h: " + PLAYER_HEIGHT);
+var player = new Player(PLAYER_START_X,PLAYER_START_Y,ENTITY_WIDTH,ENTITY_HEIGHT);
+// console.log("w: " + ENTITY_WIDTH + " h: " + ENTITY_HEIGHT);
 var allEnemies = [];
 // create the enemies
 for (var i=0;i<MAX_NUMBER_ENEMIES; i++) {
@@ -228,13 +221,13 @@ for (var i=0;i<MAX_NUMBER_ENEMIES; i++) {
    var r = randomGenerator(0,2);
    var velocity = randomGenerator(1,5);
    // console.log("random: " + r);
-   var enemy = new Enemy(ENEMY_WIDTH * -1,ENEMY_ROW_START+(r*83),velocity,ENEMY_WIDTH,ENEMY_HEIGHT);
+   var enemy = new Enemy(ENTITY_WIDTH * -1,ENEMY_ROW_START+(r*83),velocity,ENTITY_WIDTH,ENTITY_HEIGHT);
    allEnemies.push(enemy);
 }
 
 // prizes are not created here but later on, see engine.js
 
-// This listens for key presses and sends the keys to your
+// The following listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {

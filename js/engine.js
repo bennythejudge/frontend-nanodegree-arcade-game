@@ -51,8 +51,8 @@ var Engine = (function(global) {
        // reset the player to new game
        player = new Player(PLAYER_START_X,
                          PLAYER_START_Y,
-                         PLAYER_WIDTH,
-                         PLAYER_HEIGHT);
+                         ENTITY_WIDTH,
+                         ENTITY_HEIGHT);
        // reset the enemies
        allEnemies = [];
        // create the enemies
@@ -61,7 +61,7 @@ var Engine = (function(global) {
           var r = randomGenerator(0,2);
           var velocity = randomGenerator(1,5);
           // console.log("random: " + r);
-          var enemy = new Enemy(ENEMY_WIDTH * -1, ENEMY_ROW_START+(r*83),velocity,ENEMY_WIDTH,ENEMY_HEIGHT);
+          var enemy = new Enemy(ENTITY_WIDTH * -1, ENEMY_ROW_START+(r*83),velocity,ENTITY_WIDTH,ENTITY_HEIGHT);
           allEnemies.push(enemy);
        }
        STARTED = true;
@@ -113,24 +113,6 @@ var Engine = (function(global) {
        }
     }
 
-    // this function checks if the sprite of 2 objects are overlapping in the 
-    // canvas and returns True or False
-    // in input 2 objects plus the width of obj2 as size reference
-    // var imagesOverlap = function (obj1,obj2) {
-    //    //console.log("ob")
-    //    var distance=5;
-    //    // if ( (obj1.x >= player.x - ( obj2Width - distance) &&
-    //    // ( (if left margin of obj1 is within width of obj2) or
-    //    if ( (obj1.x+obj1.width >= obj2.x + 5 &&
-    //         obj1.x+obj1.width <= obj2.x+obj2.width) &&
-    //         (obj1.y === obj2.y))
-    //    {
-    //       // console.log("CLASH at y: " + player.y);
-    //       return true;
-    //    };
-    //    return false;
-    // }
-
     /* 
     ----------------------------------------------
     gameOver
@@ -143,7 +125,12 @@ var Engine = (function(global) {
        STARTED=false;
     }
 
-    // reset the player's position to starting point
+    /* 
+    ----------------------------------------------
+    resetPlayerPosition
+    reset the player back to its starting point
+    --------------------------------------------------
+    */
     function resetPlayerPosition() {
        player.x=PLAYER_START_X;
        player.y=PLAYER_START_Y;
@@ -156,6 +143,7 @@ var Engine = (function(global) {
     /* 
     ----------------------------------------------
     main
+    udacity provided main function within the engine
     --------------------------------------------------
     */
     function main() {
@@ -196,51 +184,41 @@ var Engine = (function(global) {
       main();
     }
 
-    // manage prizes
-    /*
-    * doPrize()
-    * this function handles the Prize
-    * if a prize does not exists, it creates one
-    * using random values for location and life
-    * if a prize exists, it decreases a counter
-    * when the counter reaches zero, the prize is destroyed.
+
+    /* 
+    ----------------------------------------------
+    doPrize
+    main engine for the prizes
+    if a prize does not exists, it creates one
+    using random values for location and life
+    if a prize exists, it checks if the lifetime of the
+    prize has elapsed, in which case it must be destroyed.
+    --------------------------------------------------
     */
     function doPrize() {
-       // is a prize already active?
-       // if yes, check if it's been active for
-       // the expected random number of seconds
        if (prize) {
           var seconds = new Date().getTime() / 1000;
           var diff = seconds - prize.starttime;
           var countdown = prize.lifetime - diff;
           doc.getElementById("timer").innerHTML = "Prize Count Down: " + countdown.toFixed(0);
           if (countdown <= 0) {
-             // because the counter could go negative due to the 
-             // dynamic of rendering the canvas, we cheat..
+             // because the counter could go negative
              doc.getElementById("timer").innerHTML = "Sorry you missed that!";
-             // retire prize
+             // destroy the prize
              prize = null;
           }
        } else {
-          // throw a dice and if you get a 6 show a prize for a 
-          // random period of time
+          // trying to be extra random: this represent the 
+          // interval between prizes
           var r1 = randomGenerator(1,150);
           var r2 = randomGenerator(1,150);
           if (r1+r2 === 150 ) {
-             //console.log("crea prize");
-             // TODO: need random coordinates and random type
-              // 'images/gemblue.png',
-              // 'images/gemgreen.png',
-              // 'images/gemorange.png'
              var row = randomGenerator(1,8);
-             var n = randomGenerator(2,4);
+             var col = randomGenerator(2,4);
              // console.log("n: " + n + "(should be 2-4)");
              var x = randomGenerator(0,7);
-             // console.log("star: x: "+TILE_WIDTH*x+" y:"+TILE_HEIGHT*n);
-             // prize = new Prize(TILE_WIDTH*x+10,
-             //          TILE_HEIGHT*n-10,
-             prize = new Prize(TILE_WIDTH*0+10,
-                      TILE_HEIGHT*n-10,
+             prize = new Prize(TILE_WIDTH*x+10,
+                      TILE_HEIGHT*col-10,
                       'images/Star.png',
                       PRIZE_WIDTH,PRIZE_HEIGHT);
              r = randomGenerator(6,18);
@@ -272,24 +250,30 @@ var Engine = (function(global) {
        }
     }
 
-    // checks if the Player has collected a prize
+    /* 
+    ----------------------------------------------
+    checkPrizeCollections
+    checks if the Player has collected a prize
+    --------------------------------------------------
+    */
     function checkPrizeCollections() {
-       //console.log("checking prize collections");
-       // console.log("player.x: " + player.x + " player.y: " + player.y);
-       // console.log("prize.x: " + prize.x + " prize.y: " + prize.y);
        var t = collisionDetection(prize,player);
        if (t === true) {
-          // timer=0;
           prize=null;
           player.score++;
           doc.getElementById("timer").innerHTML = "Well done!";
        }
     }
 
-    /* check for collisions between player and enemies*/
+    /* 
+    ----------------------------------------------
+    checkCollisions
+    check for collisions between player and enemies
+    using an exception to stop the forEach loop
+    the break statement is not available in this case
+    --------------------------------------------------
+    */
     function checkCollisions() {
-       // using an exception to stop the forEach loop
-       // the break statement is not available in this case
        if (typeof StopIteration == "undefined") {
         StopIteration = new Error("StopIteration");
        }
@@ -308,9 +292,8 @@ var Engine = (function(global) {
           });
        } 
        catch(error) { if (error != StopIteration) throw error; }
-       // console.log("outside forEach");
-       // return;
     }
+
     /* This is called by the update function  and loops through all of the
      * objects within your allEnemies array as defined in app.js and calls
      * their update() methods. It will then call the update function for your
@@ -318,15 +301,11 @@ var Engine = (function(global) {
      * the data/properties related to  the object. Do your drawing in your
      * render methods.
      */
-
-    // this is the "heart" of the game
     function updateEntities(dt) {
-       //console.log("inside updateEntities");
        if (! GAME_OVER && STARTED) {
           allEnemies.forEach(function(enemy) {
               enemy.update(dt);
           });
-          player.update();
        }
     }
 
@@ -336,7 +315,6 @@ var Engine = (function(global) {
      * they are flipbooks creating the illusion of animation but in reality
      * they are just drawing the entire screen over and over.
      */
-    // adding the gameover text
     function render() {
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
@@ -369,14 +347,13 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
-        // TODO: add here the health bar for player
         if (GAME_OVER) {
            ctx.fillStyle = "blue";
            ctx.font = "bold 48pt Arial";
            var msg="Game Over!";
-           var t=ctx.measureText(msg).width;
-           //console.log(t);
-           ctx.fillText(msg, (canvas.width - t)/2, ((canvas.height-48)/2)+48);
+           var textWidth=ctx.measureText(msg).width;
+           // to keep the text centered horizontally and vertically
+           ctx.fillText(msg, (canvas.width - textWidth)/2, ((canvas.height-48)/2)+48);
         } else { 
            if (STARTED) {
               renderEntities();
@@ -386,8 +363,6 @@ var Engine = (function(global) {
         }
         var img = new Image();
         img.src = player.sprite;
-        // console.log("w: "+img.width);
-        // console.log("h: "+img.height);
     }
 
     /* This function is called by the render function and is called on each game
@@ -398,9 +373,9 @@ var Engine = (function(global) {
        if (!STARTED) {
           return;
        }
-        /* Loop through all of the objects within the allEnemies array and call
-         * the render function you have defined.
-         */
+       /* Loop through all of the objects within the allEnemies array and call
+        * the render function you have defined.
+        */
        // if (timer>0) {
        if (prize) {
           prize.render();
