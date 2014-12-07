@@ -121,7 +121,7 @@ Enemy.prototype.update = function(dt) {
          if (this.velocityIncrease * this.v < this.velocityCapping) {
             this.v = this.v * this.velocityIncrease;
             this.velocityIncrease = this.velocityIncrease * 1.02;
-            console.log('[+] velocity: ' + this.v);
+            // console.log('[+] velocity: ' + this.v);
          }
          // go!
       } else {
@@ -148,6 +148,9 @@ var Player = function(x,y,w,h) {
    this.height=h;
    this.lives=PLAYER_LIVES;
    this.score=0;
+   this.halfWidth=this.w/2;
+   var ratio=this.width/this.height;
+   this.halfHeight=this.width/(2*ratio);
 }
 
 Player.prototype.update = function(dt) {
