@@ -32,6 +32,13 @@ var Engine = (function(global) {
     // a timer for prizes
     // var timer=0;
     var prize=null;
+    
+    /* 
+    ----------------------------------------------
+    StartOrRestartGame
+    performs a start or restart of the game
+    --------------------------------------------------
+    */
     var StartOrRestartGame = function() {
        // set the value of the button to "Restart Game"
        btn=doc.getElementById("game-button");
@@ -62,10 +69,16 @@ var Engine = (function(global) {
        // timer=0;
        prize=null;
        doc.getElementById("timer").innerHTML = "Prize coming soon!";
+       doc.getElementById("timer").style.display = 'inline-block';
        init();
     }
 
-    // update lives and scores in the HTML page
+    /* 
+    ----------------------------------------------
+    updateLivesAndScores
+    updates ancillary info about the game in the HTML
+    --------------------------------------------------
+    */
     var updateLivesAndScores = function() {
        doc.getElementById("score").style.display = 'block';
        doc.getElementById("lives").style.display = 'block';
@@ -73,14 +86,27 @@ var Engine = (function(global) {
        doc.getElementById("lives").innerHTML = "Lives: " + player.lives;
     }
 
-    /* new collision detection function */
+    /* 
+    ----------------------------------------------
+    collisionDetection
+    detects collisions - or it should in theory..
+    --------------------------------------------------
+    */
     var collisionDetection = function(object1,object2) {
        // detect if the 2 object collide using the axis-aligned bounding box
-       if (object1.x < object2.x + object2.width &&
+       if (object1.x < object2.x + (object2.width/2) &&
           object1.x + object1.width > object2.x &&
-          object1.y < object2.y + object2.height &&
-          object1.height + object1.y > object2.y) 
+          object1.y < object2.y + (object2.height/COLLISION_DIVIDER) &&
+          (object1.height/COLLISION_DIVIDER) + object1.y > object2.y) 
        {
+          console.log("collision detection: object1.x: "+ object1.x);
+          console.log("object1.y: " + object1.y);
+          console.log(" object1.width: " + object1.width);
+          console.log(" object1.height: " + object1.height);
+          console.log(" object2.x: " + object2.x);
+          console.log(" object2.y: " + object2.y);
+          console.log(" object2.width: " + object2.width);
+          console.log(" object2.height: " + object2.height/2);
           return true;
        } else {
           return false;
@@ -90,24 +116,29 @@ var Engine = (function(global) {
     // this function checks if the sprite of 2 objects are overlapping in the 
     // canvas and returns True or False
     // in input 2 objects plus the width of obj2 as size reference
-    var imagesOverlap = function (obj1,obj2) {
-       //console.log("ob")
-       var distance=5;
-       // if ( (obj1.x >= player.x - ( obj2Width - distance) &&
-       // ( (if left margin of obj1 is within width of obj2) or 
-       if ( (obj1.x+obj1.width >= obj2.x + 5 && 
-            obj1.x+obj1.width <= obj2.x+obj2.width) &&
-            (obj1.y === obj2.y)) 
-       {
-          // console.log("CLASH at y: " + player.y);
-          return true;
-       };
-       return false;
-    }
+    // var imagesOverlap = function (obj1,obj2) {
+    //    //console.log("ob")
+    //    var distance=5;
+    //    // if ( (obj1.x >= player.x - ( obj2Width - distance) &&
+    //    // ( (if left margin of obj1 is within width of obj2) or
+    //    if ( (obj1.x+obj1.width >= obj2.x + 5 &&
+    //         obj1.x+obj1.width <= obj2.x+obj2.width) &&
+    //         (obj1.y === obj2.y))
+    //    {
+    //       // console.log("CLASH at y: " + player.y);
+    //       return true;
+    //    };
+    //    return false;
+    // }
 
-    // game over
+    /* 
+    ----------------------------------------------
+    gameOver
+    set variable to Game Over
+    --------------------------------------------------
+    */
     function gameOver() {
-       console.log("inside gameOver");
+       // console.log("inside gameOver");
        GAME_OVER=true;
        STARTED=false;
     }
@@ -121,6 +152,12 @@ var Engine = (function(global) {
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
      */
+
+    /* 
+    ----------------------------------------------
+    main
+    --------------------------------------------------
+    */
     function main() {
         /* Get our time delta information which is required if your game
          * requires smooth animation. Because everyone's computer processes
@@ -200,12 +237,14 @@ var Engine = (function(global) {
              // console.log("n: " + n + "(should be 2-4)");
              var x = randomGenerator(0,7);
              // console.log("star: x: "+TILE_WIDTH*x+" y:"+TILE_HEIGHT*n);
-             prize = new Prize(TILE_WIDTH*x+10,
+             // prize = new Prize(TILE_WIDTH*x+10,
+             //          TILE_HEIGHT*n-10,
+             prize = new Prize(TILE_WIDTH*0+10,
                       TILE_HEIGHT*n-10,
                       'images/Star.png',
                       PRIZE_WIDTH,PRIZE_HEIGHT);
              r = randomGenerator(6,18);
-             console.log(r);
+             // console.log(r);
              prize.starttime = new Date().getTime() / 1000;
              prize.lifetime = r;
           }
@@ -288,10 +327,6 @@ var Engine = (function(global) {
               enemy.update(dt);
           });
           player.update();
-          // if (timer>0) {
-          if (prize) { 
-             prize.update();
-          }
        }
     }
 
@@ -335,7 +370,6 @@ var Engine = (function(global) {
             }
         }
         // TODO: add here the health bar for player
-        renderEntities();
         if (GAME_OVER) {
            ctx.fillStyle = "blue";
            ctx.font = "bold 48pt Arial";
@@ -343,11 +377,17 @@ var Engine = (function(global) {
            var t=ctx.measureText(msg).width;
            //console.log(t);
            ctx.fillText(msg, (canvas.width - t)/2, ((canvas.height-48)/2)+48);
+        } else { 
+           if (STARTED) {
+              renderEntities();
+              // display scores and lives
+              updateLivesAndScores();
+           }
         }
-        if (STARTED) {
-           // display scores and lives
-           updateLivesAndScores();
-        }
+        var img = new Image();
+        img.src = player.sprite;
+        // console.log("w: "+img.width);
+        // console.log("h: "+img.height);
     }
 
     /* This function is called by the render function and is called on each game
@@ -379,7 +419,7 @@ var Engine = (function(global) {
     function reset() {
     }
 
-    console.log("second point of control");
+    // console.log("second point of control");
 
     // the start button
     if (GAME_OVER || ! STARTED) {
@@ -392,7 +432,6 @@ var Engine = (function(global) {
        btn.onclick = StartOrRestartGame;
        doc.getElementById("startgame").appendChild(btn);
        doc.getElementById("startgame").style.display = 'block';
-       // return;
     }
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when

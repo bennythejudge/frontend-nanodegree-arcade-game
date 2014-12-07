@@ -6,13 +6,10 @@ body {
    display: inline-block;
 }
 
-#score, #lives, #secondline, #startgame {
+#score, #lives, #secondline, #startgame, #timer {
    display: none;
 }
 
-/*#instructions {
-   display: block;
-   padding: 80px;
-   margin-right: 50px;
-   margin-left: 50px;
-}*/
+.topclass {
+   display: inline-block;
+}

@@ -1,17 +1,3 @@
-// TODO: in engine.js, at line 190, add a health bar for player
-//       fill it in red as the player loses lives. it must be in proportion
-//       to the length of the bar and to the total number of lives
-//       position it to cover the bottom part of the grass tiles at the bottom
-//       width / total number of lives -> unit of the bar
-//       initially the bar is green. every time a live is lost, one unit becomes red
-//
-// TODO: the game could consist in having to get to the top grass line to fetch something and 
-//       then bring it back to the bottom grass line.
-//       it could be just any object, but it could also be letters, randomly posted, to make real words
-//       words would have to be validated against an authority, say cambridge or wm
-// TODO: at game over, do NOT reset the player, leave it where it "died"
-// TODO: the "feature" of a random sprite could be 'inherent' to the Prize class
-//       bring the random choice of sprite inside the Prize object
 // TODO: search for any hardcoded value and remove it
 
 // some globals
@@ -23,23 +9,25 @@ var CANVAS_WIDTH = 809;
 var CANVAS_HEIGHT = 606;
 // player
 var PLAYER_START_X = 0;
-var PLAYER_START_Y = 404;  
-var PLAYER_WIDTH=78;
-var PLAYER_HEIGHT=68;
+var PLAYER_START_Y = 404;
+// player dimensions
+// var PLAYER_WIDTH=78;
+// var PLAYER_HEIGHT=68;
+var PLAYER_WIDTH=101;
+var PLAYER_HEIGHT=171;
+//
 var PLAYER_RIGHT_MOVE=101;
 var PLAYER_LEFT_MOVE=101;
 var PLAYER_UP_MOVE=83;
 var PLAYER_DOWN_MOVE=83;
 // player lives and scoring
 var PLAYER_LIVES=5;
-
-// TODO: delete following
-// var PLAYER_POINTS=0;
-
 // enemy
-var ENEMY_WIDTH=78;
-var ENEMY_HEIGHT=68;
-var MAX_NUMBER_ENEMIES=5;
+var ENEMY_WIDTH=PLAYER_WIDTH;
+var ENEMY_HEIGHT=PLAYER_HEIGHT;
+// var ENEMY_WIDTH=78;
+// var ENEMY_HEIGHT=68;
+var MAX_NUMBER_ENEMIES=1;
 // tiles
 var TILE_HEIGHT=83;
 var TILE_WIDTH=99;
@@ -57,6 +45,9 @@ var SECOND_ROCKS_ROW_START = 238;
 var SECOND_ROCKS_COL_START = 0;
 var THIRD_ROCKS_ROW_START = 321;
 var THIRD_ROCKS_COL_START = 0;
+// this value is used to make entities collide at a shorter
+// distance
+var COLLISION_DIVIDER=2.5
 // game engine control
 var GAME_OVER = false;
 var STARTED = false;
@@ -64,8 +55,10 @@ var STARTED = false;
 var PRIZE_WIDTH = 73;
 var PRIZE_HEIGHT = 68;
 
+// -----------------------------------------
 // helpers
 // add 1 to cover the whole range min, max
+// -----------------------------------------
 var randomGenerator = function (min,max) {
    var realMax=max+1;
    var n = Math.floor(Math.random() * (realMax - min)) + min;
@@ -76,7 +69,7 @@ var randomGenerator = function (min,max) {
    return n;
 }
 
-// Enemies our player must avoid
+// Enemies that the player must avoid
 // adding v for velocity
 // adding w for width and h for height
 var Enemy = function(x,y,v,w,h) {
@@ -135,7 +128,6 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
-
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
@@ -148,13 +140,9 @@ var Player = function(x,y,w,h) {
    this.height=h;
    this.lives=PLAYER_LIVES;
    this.score=0;
-   this.halfWidth=this.w/2;
-   var ratio=this.width/this.height;
-   this.halfHeight=this.width/(2*ratio);
 }
 
 Player.prototype.update = function(dt) {
-
 }
 
 Player.prototype.render = function() {
@@ -204,7 +192,7 @@ Player.prototype.handleInput = function(key) {
    }
 }
 
-/* 
+/*
  add another class for the prizes
  a prize attributes are:
  location (x,y)
@@ -221,14 +209,6 @@ var Prize = function(x,y,spriteName,w,h) {
    this.lifetime=0;
 }
 
-/*
-TODO: do we need this ?
- what is update for a Prize? Not clear yet
-*/
-Prize.prototype.update = function() {
-   //console.log("update prize");
-}
-
 Prize.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
@@ -240,6 +220,7 @@ Prize.prototype.render = function() {
 // so that it appears to come from an invisible area before the 
 // left margin of the canvas
 var player = new Player(PLAYER_START_X,PLAYER_START_Y,PLAYER_WIDTH,PLAYER_HEIGHT);
+// console.log("w: " + PLAYER_WIDTH + " h: " + PLAYER_HEIGHT);
 var allEnemies = [];
 // create the enemies
 for (var i=0;i<MAX_NUMBER_ENEMIES; i++) {
