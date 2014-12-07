@@ -387,6 +387,8 @@ var Engine = (function(global) {
        btn.type = "button";
        btn.value = "Start Game";
        btn.id = "game-button";
+       btn.className="btn btn-default";
+       // btn.style("btn-default");
        btn.onclick = StartOrRestartGame;
        doc.getElementById("startgame").appendChild(btn);
        doc.getElementById("startgame").style.display = 'block';

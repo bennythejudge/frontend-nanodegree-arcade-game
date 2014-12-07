@@ -90,10 +90,10 @@ var Enemy = function(x,y,v,w,h) {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/char-boy.png';
-    this.speed = 0;
     this.startLine = 0;
     // velocity increase multiplier
     this.velocityIncrease = 1;
+    this.velocityCapping = 15;
 }
 
 // Update the enemy's position, required method for game
@@ -118,9 +118,11 @@ Enemy.prototype.update = function(dt) {
          this.y = r;
          // random speed
          this.v = randomGenerator(1,5);
-         this.v = this.v * this.velocityIncrease;
-         this.velocityIncrease = this.velocityIncrease * 1.02;
-         console.log('velocity: ' + this.v);
+         if (this.velocityIncrease * this.v < this.velocityCapping) {
+            this.v = this.v * this.velocityIncrease;
+            this.velocityIncrease = this.velocityIncrease * 1.02;
+            console.log('[+] velocity: ' + this.v);
+         }
          // go!
       } else {
          this.x+=101*dt*this.v;
