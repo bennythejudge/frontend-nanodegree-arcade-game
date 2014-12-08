@@ -6,7 +6,7 @@ frontend-nanodegree-arcade-game
 ===============================
 How to:
 There are various ways to execute this game depending on your configuration.
-**Please note that loading the index.html in the browser will not work.
+**Please note that loading the index.html in the browser will not work.**
 The simplest way is to execute the SimpleHTTPServer via python:
 - download the game from github
 - cd into the game directory
