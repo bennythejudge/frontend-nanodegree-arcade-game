@@ -39,8 +39,7 @@ var Engine = (function(global) {
     canvas.height = CANVAS_HEIGHT;
     doc.body.appendChild(canvas);
 
-    // a timer for prizes
-    // var timer=0;
+    // start with no prize
     var prize=null;
     
     /* 
