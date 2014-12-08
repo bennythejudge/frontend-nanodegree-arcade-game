@@ -394,16 +394,19 @@ var Engine = (function(global) {
     function reset() {
     }
 
-    // console.log("second point of control");
-
-    // the start button
+    /* 
+    ----------------------------------------------
+    main code in the egine.js
+    this is always executed
+    --------------------------------------------------
+    */
+    // draw the the start button if necessary
     if (GAME_OVER || ! STARTED) {
        var btn = doc.createElement("input");
        btn.type = "button";
        btn.value = "Start Game";
        btn.id = "game-button";
        btn.className="btn btn-default";
-       // btn.style("btn-default");
        btn.onclick = StartOrRestartGame;
        doc.getElementById("startgame").appendChild(btn);
        doc.getElementById("startgame").style.display = 'block';
@@ -426,7 +429,6 @@ var Engine = (function(global) {
         'images/Star.png'
     ]);
     Resources.onReady(init);
-
     /* Assign the canvas' context object to the global variable (the window
      * object when run in a browser) so that developer's can use it more easily
      * from within their app.js files.
