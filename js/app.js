@@ -26,7 +26,7 @@ var PLAYER_UP_MOVE=83;
 var PLAYER_DOWN_MOVE=83;
 var PLAYER_LIVES=5;
 // enemies control
-var MAX_NUMBER_ENEMIES=6;
+var MAX_NUMBER_ENEMIES=5;
 // tiles
 var TILE_HEIGHT=83;
 var TILE_WIDTH=99;

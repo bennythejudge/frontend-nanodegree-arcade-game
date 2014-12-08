@@ -99,14 +99,14 @@ var Engine = (function(global) {
           object1.y < object2.y + (object2.height/COLLISION_DIVIDER) &&
           (object1.height/COLLISION_DIVIDER) + object1.y > object2.y) 
        {
-          console.log("collision detection: object1.x: "+ object1.x);
-          console.log("object1.y: " + object1.y);
-          console.log(" object1.width: " + object1.width);
-          console.log(" object1.height: " + object1.height);
-          console.log(" object2.x: " + object2.x);
-          console.log(" object2.y: " + object2.y);
-          console.log(" object2.width: " + object2.width);
-          console.log(" object2.height: " + object2.height/2);
+          // console.log("collision detection: object1.x: "+ object1.x);
+          // console.log("object1.y: " + object1.y);
+          // console.log(" object1.width: " + object1.width);
+          // console.log(" object1.height: " + object1.height);
+          // console.log(" object2.x: " + object2.x);
+          // console.log(" object2.y: " + object2.y);
+          // console.log(" object2.width: " + object2.width);
+          // console.log(" object2.height: " + object2.height/2);
           return true;
        } else {
           return false;
