@@ -1,6 +1,8 @@
 /* 
 ----------------------------------------------
 apps.js
+udacity project nr. 3
+Benedetto Lo Giudice
 this file contains global constants, global variables
 and the Objects.
 It performs the creation of new entities for the first time

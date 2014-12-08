@@ -4,24 +4,19 @@ By Benedetto Lo Giudice
 
 frontend-nanodegree-arcade-game
 ===============================
-
-Students should use this rubric: https://www.udacity.com/course/viewer#!/c-ud015/l-3072058665/m-3072588797
-for self-checking their submission.
-My notes
-
-References for project 3 Udacity
-1) http://jlongster.com/Making-Sprite-based-Games-with-Canvas
-quoted within the Canvas course 
-2) https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
-for collision detection
-
 How to:
-There are various ways to execute this game depending on your configuration. 
-The base minimum suggested method is to execute a minimal web server via
-python:
+There are various ways to execute this game depending on your configuration.
+One way to execute it is *NOT* loading it via the browser.
+The simplest way is to execute the SimpleHTTPServer via python:
 1) download the game from github
 2) cd into the game directory
 3) execute python -m SimpleHTTPServer
 4) check for the message "Serving HTTP on 0.0.0.0 8000 ..." 
-5) open your browser and use the url: http://localhost:8000 if the number above is not 8000,
-   use that number instead.
+5) open your browser and use the url: http://localhost:8000 
+6) if the port number used by the HTTP server is different, change
+accordingly in the URL.
+
+To play the game:
+use arrows to move your character. Avoid the enemies dashing from left to right over the rocky tiles.
+The grass tiles are safe.
+Catch the star to earn points.
