@@ -4,7 +4,6 @@ engine.js
 udacity project nr. 3
 Benedetto Lo Giudice
 contains main 
-
 --------------------------------------------------
 */
 
@@ -80,7 +79,7 @@ var Engine = (function(global) {
        doc.getElementById("timer").innerHTML = "Prize coming soon!";
        doc.getElementById("timer").style.display = 'inline-block';
        init();
-    }
+    };
 
     /* 
     ----------------------------------------------
@@ -93,7 +92,7 @@ var Engine = (function(global) {
        doc.getElementById("lives").style.display = 'block';
        doc.getElementById("score").innerHTML = "Score: " + player.score;
        doc.getElementById("lives").innerHTML = "Lives: " + player.lives;
-    }
+    };
 
     /* 
     ----------------------------------------------
@@ -120,7 +119,7 @@ var Engine = (function(global) {
        } else {
           return false;
        }
-    }
+    };
 
     /* 
     ----------------------------------------------
@@ -132,7 +131,7 @@ var Engine = (function(global) {
        // console.log("inside gameOver");
        GAME_OVER=true;
        STARTED=false;
-    }
+    };
 
     /* 
     ----------------------------------------------
@@ -143,7 +142,7 @@ var Engine = (function(global) {
     function resetPlayerPosition() {
        player.x=PLAYER_START_X;
        player.y=PLAYER_START_Y;
-    }
+    };
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -191,7 +190,7 @@ var Engine = (function(global) {
       // reset();
       lastTime = Date.now();
       main();
-    }
+    };
 
 
     /* 
@@ -236,7 +235,7 @@ var Engine = (function(global) {
              prize.lifetime = r;
           }
        }
-    }
+    };
 
     /* This function is called by main (our game loop) and itself calls all
      * of the functions which may need to update entity's data. Based on how
@@ -257,7 +256,7 @@ var Engine = (function(global) {
              checkPrizeCollections();
           }
        }
-    }
+    };
 
     /* 
     ----------------------------------------------
@@ -272,7 +271,7 @@ var Engine = (function(global) {
           player.score++;
           doc.getElementById("timer").innerHTML = "Well done!";
        }
-    }
+    };
 
     /* 
     ----------------------------------------------
@@ -301,7 +300,7 @@ var Engine = (function(global) {
           });
        } 
        catch(error) { if (error != StopIteration) throw error; }
-    }
+    };
 
     /* This is called by the update function  and loops through all of the
      * objects within your allEnemies array as defined in app.js and calls
@@ -316,7 +315,7 @@ var Engine = (function(global) {
               enemy.update(dt);
           });
        }
-    }
+    };
 
     /* This function initially draws the "game level", it will then call
      * the renderEntities function. Remember, this function is called every
@@ -372,7 +371,7 @@ var Engine = (function(global) {
         }
         var img = new Image();
         img.src = player.sprite;
-    }
+    };
 
     /* This function is called by the render function and is called on each game
      * tick. It's purpose is to then call the render functions you have defined
@@ -394,14 +393,14 @@ var Engine = (function(global) {
             enemy.render();
         });
         player.render();
-    }
+    };
 
     /* This function does nothing but it could have been a good place to
      * handle game reset states - maybe a new game menu or a game over screen
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-    }
+    };
 
     /* 
     ----------------------------------------------

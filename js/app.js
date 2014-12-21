@@ -72,7 +72,7 @@ var randomGenerator = function (min,max) {
       console.log("ANOMALY! min: " + min + " max: " + max + " n: " + n);
    }
    return n;
-}
+};
 
 /* 
 ----------------------------------------------
@@ -94,7 +94,7 @@ var Enemy = function(x,y,v,w,h) {
     // velocity increase multiplier
     this.velocityIncrease = 1;
     this.velocityCapping = 15;
-}
+};
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -128,12 +128,12 @@ Enemy.prototype.update = function(dt) {
          this.x+=101*dt*this.v;
       }
    }
-}
+};
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 // Now write your own player class
 // This class requires an update(), render() and
@@ -147,11 +147,11 @@ var Player = function(x,y,w,h) {
    this.height=h;
    this.lives=PLAYER_LIVES;
    this.score=0;
-}
+};
 
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 // handle keyboard events
 Player.prototype.handleInput = function(key) {
@@ -192,7 +192,7 @@ Player.prototype.handleInput = function(key) {
          }
          break;
    }
-}
+};
 
 var Prize = function(x,y,spriteName,w,h) {
    this.x = x;
@@ -202,11 +202,11 @@ var Prize = function(x,y,spriteName,w,h) {
    this.height=h;
    this.starttime=0;
    this.lifetime=0;
-}
+};
 
 Prize.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
@@ -225,7 +225,7 @@ for (var i=0;i<MAX_NUMBER_ENEMIES; i++) {
    // console.log("random: " + r);
    var enemy = new Enemy(ENTITY_WIDTH * -1,ENEMY_ROW_START+(r*83),velocity,ENTITY_WIDTH,ENTITY_HEIGHT);
    allEnemies.push(enemy);
-}
+};
 
 // prizes are not created here but later on, see engine.js
 
