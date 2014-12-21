@@ -18,3 +18,6 @@ To play the game:
 - use arrows to move your character. Avoid the enemies dashing from left to right over the rocky tiles.
 - The grass tiles are safe.
 - Catch the stars to earn points.
+
+21/12/2014
+starting the 2nd submission.
