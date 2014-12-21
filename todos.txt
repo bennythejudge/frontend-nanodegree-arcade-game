@@ -1,0 +1,28 @@
+// TODO: in engine.js, at line 190, add a health bar for player
+//       fill it in red as the player loses lives. it must be in proportion
+//       to the length of the bar and to the total number of lives
+//       position it to cover the bottom part of the grass tiles at the bottom
+//       width / total number of lives -> unit of the bar
+//       initially the bar is green. every time a live is lost, one unit becomes red
+
+
+//
+// TODO: the game could consist in having to get to the top grass line to fetch something and 
+//       then bring it back to the bottom grass line.
+//       it could be just any object, but it could also be letters, randomly posted, to make real words
+//       words would have to be validated against an authority, say cambridge or wm
+
+// TODO: at game over, do NOT reset the player, leave it where it "died"
+
+// TODO: the "feature" of a random sprite could be 'inherent' to the Prize class
+//       bring the random choice of sprite inside the Prize object
+
+             // TODO: need random coordinates and random type
+              // 'images/gemblue.png',
+              // 'images/gemgreen.png',
+              // 'images/gemorange.png'
+
+
+        // TODO: add here the health bar for player
+
+
