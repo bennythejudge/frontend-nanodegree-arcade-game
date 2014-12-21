@@ -49,11 +49,11 @@ var Engine = (function(global) {
     */
     var StartOrRestartGame = function() {
        // set the value of the button to "Restart Game"
-       btn=doc.getElementById("game-button");
+       btn=doc.getElementById('game-button');
        if (btn === null) {
-          console.log("button is null!");
+          console.log('button is null!');
        } else {
-          btn.value="Restart Game!";
+          btn.value='Restart Game!';
           // console.log("button is NOT null!");
        }
        // reset the player to new game
@@ -76,8 +76,8 @@ var Engine = (function(global) {
        GAME_OVER = false;
        // timer=0;
        prize=null;
-       doc.getElementById("timer").innerHTML = "Prize coming soon!";
-       doc.getElementById("timer").style.display = 'inline-block';
+       doc.getElementById('timer').innerHTML = 'Prize coming soon!';
+       doc.getElementById('timer').style.display = 'inline-block';
        init();
     };
 
@@ -88,10 +88,10 @@ var Engine = (function(global) {
     --------------------------------------------------
     */
     var updateLivesAndScores = function() {
-       doc.getElementById("score").style.display = 'block';
-       doc.getElementById("lives").style.display = 'block';
-       doc.getElementById("score").innerHTML = "Score: " + player.score;
-       doc.getElementById("lives").innerHTML = "Lives: " + player.lives;
+       doc.getElementById('score').style.display = 'block';
+       doc.getElementById('lives').style.display = 'block';
+       doc.getElementById('score').innerHTML = 'Score: ' + player.score;
+       doc.getElementById('lives').innerHTML = 'Lives: ' + player.lives;
     };
 
     /* 
@@ -107,14 +107,6 @@ var Engine = (function(global) {
           object1.y < object2.y + (object2.height/COLLISION_DIVIDER) &&
           (object1.height/COLLISION_DIVIDER) + object1.y > object2.y) 
        {
-          // console.log("collision detection: object1.x: "+ object1.x);
-          // console.log("object1.y: " + object1.y);
-          // console.log(" object1.width: " + object1.width);
-          // console.log(" object1.height: " + object1.height);
-          // console.log(" object2.x: " + object2.x);
-          // console.log(" object2.y: " + object2.y);
-          // console.log(" object2.width: " + object2.width);
-          // console.log(" object2.height: " + object2.height/2);
           return true;
        } else {
           return false;
@@ -128,7 +120,6 @@ var Engine = (function(global) {
     --------------------------------------------------
     */
     function gameOver() {
-       // console.log("inside gameOver");
        GAME_OVER=true;
        STARTED=false;
     };
@@ -208,10 +199,10 @@ var Engine = (function(global) {
           var seconds = new Date().getTime() / 1000;
           var diff = seconds - prize.starttime;
           var countdown = prize.lifetime - diff;
-          doc.getElementById("timer").innerHTML = "Prize Count Down: " + countdown.toFixed(0);
+          doc.getElementById('timer').innerHTML = 'Prize Count Down: ' + countdown.toFixed(0);
           if (countdown <= 0) {
              // because the counter could go negative
-             doc.getElementById("timer").innerHTML = "Sorry you missed that!";
+             doc.getElementById('timer').innerHTML = 'Sorry you missed that!';
              // destroy the prize
              prize = null;
           }
@@ -223,7 +214,6 @@ var Engine = (function(global) {
           if (r1+r2 === 150 ) {
              var row = randomGenerator(1,8);
              var col = randomGenerator(2,4);
-             // console.log("n: " + n + "(should be 2-4)");
              var x = randomGenerator(0,7);
              prize = new Prize(TILE_WIDTH*x+10,
                       TILE_HEIGHT*col-10,
@@ -269,7 +259,7 @@ var Engine = (function(global) {
        if (t === true) {
           prize=null;
           player.score++;
-          doc.getElementById("timer").innerHTML = "Well done!";
+          doc.getElementById('timer').innerHTML = 'Well done!';
        }
     };
 
@@ -282,8 +272,8 @@ var Engine = (function(global) {
     --------------------------------------------------
     */
     function checkCollisions() {
-       if (typeof StopIteration == "undefined") {
-        StopIteration = new Error("StopIteration");
+       if (typeof StopIteration == 'undefined') {
+        StopIteration = new Error('StopIteration');
        }
        try
        {
@@ -356,9 +346,9 @@ var Engine = (function(global) {
             }
         }
         if (GAME_OVER) {
-           ctx.fillStyle = "blue";
-           ctx.font = "bold 48pt Arial";
-           var msg="Game Over!";
+           ctx.fillStyle = 'blue';
+           ctx.font = 'bold 48pt Arial';
+           var msg='Game Over!';
            var textWidth=ctx.measureText(msg).width;
            // to keep the text centered horizontally and vertically
            ctx.fillText(msg, (canvas.width - textWidth)/2, ((canvas.height-48)/2)+48);
@@ -389,7 +379,6 @@ var Engine = (function(global) {
           prize.render();
        }
         allEnemies.forEach(function(enemy) {
-            // console.log("rendering enemy");
             enemy.render();
         });
         player.render();
@@ -410,14 +399,14 @@ var Engine = (function(global) {
     */
     // draw the the start button if necessary
     if (GAME_OVER || ! STARTED) {
-       var btn = doc.createElement("input");
-       btn.type = "button";
-       btn.value = "Start Game";
-       btn.id = "game-button";
-       btn.className="btn btn-default";
+       var btn = doc.createElement('input');
+       btn.type = 'button';
+       btn.value = 'Start Game';
+       btn.id = 'game-button';
+       btn.className='btn btn-default';
        btn.onclick = StartOrRestartGame;
-       doc.getElementById("startgame").appendChild(btn);
-       doc.getElementById("startgame").style.display = 'block';
+       doc.getElementById('startgame').appendChild(btn);
+       doc.getElementById('startgame').style.display = 'block';
     }
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when

@@ -67,9 +67,8 @@ a random integer generator in the range min - max
 var randomGenerator = function (min,max) {
    var realMax=max+1;
    var n = Math.floor(Math.random() * (realMax - min)) + min;
-   // console.log("min: " + min + " max: " + max + " n: " + n);
    if (n<min || n>max) {
-      console.log("ANOMALY! min: " + min + " max: " + max + " n: " + n);
+      console.log('ANOMALY! min: ' + min + ' max: ' + max + ' n: ' + n);
    }
    return n;
 };
@@ -158,7 +157,7 @@ Player.prototype.handleInput = function(key) {
    if (GAME_OVER) { return; }
    switch(key) {
       // move right but prevent the character to go outside the right margin
-      case "right":
+   case 'right':
          if (this.x+PLAYER_RIGHT_MOVE>RIGHT_BORDER-(PLAYER_RIGHT_MOVE/2)) {
             //alert("can't go any further right")
          } else {
@@ -166,7 +165,7 @@ Player.prototype.handleInput = function(key) {
          }
          break;
       // move left but prevent the sprite to go beyond the left margin
-      case "left":
+      case 'left':
          if (this.x-PLAYER_LEFT_MOVE/2<LEFT_BORDER) {
             // alert("can't go any further left");
          } else {
@@ -174,7 +173,7 @@ Player.prototype.handleInput = function(key) {
          }
          break;
       // go up, not into the water!
-      case "up":
+      case 'up':
          // console.log("TOP: " + TOP_BORDER + " y: " + this.y);
          if (this.y<TOP_BORDER) {
             // alert("can't go any further top");
@@ -183,7 +182,7 @@ Player.prototype.handleInput = function(key) {
          }
          break;
       // move down but not below the canvas
-      case "down":
+      case 'down':
          // console.log("DOWN: " + BOTTOM_BORDER + " y: " + this.y);
          if (this.y+PLAYER_DOWN_MOVE>BOTTOM_BORDER) {
             // alert("can't go any further down");
@@ -215,14 +214,12 @@ Prize.prototype.render = function() {
 // so that it appears to come from an invisible area before the 
 // left margin of the canvas
 var player = new Player(PLAYER_START_X,PLAYER_START_Y,ENTITY_WIDTH,ENTITY_HEIGHT);
-// console.log("w: " + ENTITY_WIDTH + " h: " + ENTITY_HEIGHT);
 var allEnemies = [];
 // create the enemies
 for (var i=0;i<MAX_NUMBER_ENEMIES; i++) {
    // pick a random line (1, 2 or 3)
    var r = randomGenerator(0,2);
    var velocity = randomGenerator(1,5);
-   // console.log("random: " + r);
    var enemy = new Enemy(ENTITY_WIDTH * -1,ENEMY_ROW_START+(r*83),velocity,ENTITY_WIDTH,ENTITY_HEIGHT);
    allEnemies.push(enemy);
 };
