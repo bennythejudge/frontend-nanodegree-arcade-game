@@ -78,12 +78,12 @@ var randomGenerator = function (min,max) {
 Objects
 --------------------------------------------------
 */
-var Enemy = function(x,y,v,w,h) {
+var Enemy = function(x,y,speed,w,h) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
    this.x = x;
    this.y = y;
-   this.v = v;
+   this.speed = speed;
    this.width = w;
    this.height=h;
     // The image/sprite for our enemies, this uses
@@ -116,15 +116,14 @@ Enemy.prototype.update = function(dt) {
          } while (r===this.y);
          this.y = r;
          // random speed
-         this.v = randomGenerator(1,5);
-         if (this.velocityIncrease * this.v < this.velocityCapping) {
-            this.v = this.v * this.velocityIncrease;
+         this.speed = randomGenerator(1,5);
+         if (this.velocityIncrease * this.speed < this.velocityCapping) {
+            this.speed = this.speed * this.velocityIncrease;
             this.velocityIncrease = this.velocityIncrease * 1.02;
-            // console.log('[+] velocity: ' + this.v);
          }
          // go!
       } else {
-         this.x+=101*dt*this.v;
+         this.x+=101*dt*this.speed;
       }
    }
 };
