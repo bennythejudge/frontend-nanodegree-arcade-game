@@ -73,38 +73,46 @@ var randomGenerator = function (min,max) {
    return n;
 };
 
+function createTheEnemies() {
+   for (var i=0;i<MAX_NUMBER_ENEMIES; i++) {
+      // pick a random line (1, 2 or 3)
+      var randomLine = randomGenerator(0,2);
+      var speed = randomGenerator(1,5);
+      var enemy = new Enemy(ENTITY_WIDTH * -1, ENEMY_ROW_START+(randomLine*83),speed,ENTITY_WIDTH,ENTITY_HEIGHT);
+      allEnemies.push(enemy);
+   }
+}
+
 /* 
 ----------------------------------------------
 Objects
+Parameters: x,y (location in canvas); speed, 
+            w = width, h = height
 --------------------------------------------------
 */
 var Enemy = function(x,y,speed,w,h) {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
    this.x = x;
    this.y = y;
    this.speed = speed;
    this.width = w;
    this.height=h;
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
-    this.sprite = 'images/char-boy.png';
-    this.startLine = 0;
-    // velocity increase multiplier
-    this.velocityIncrease = 1;
-    this.velocityCapping = 15;
+   this.sprite = 'images/char-boy.png';
+   this.startLine = 0;
+   // velocity increase multiplier
+   this.velocityIncrease = 1;
+   this.velocityCapping = 15;
 };
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
+// You should multiply any movement by the dt parameter
+// which will ensure the game runs at the same speed for
+// all computers.
+// my note: enemies are generated at a random line, with a 
+// random speed (within a range), moving from left to right.
+// they are reset when they reach the right margin
+// the speed increases by 2% at every update
 Enemy.prototype.update = function(dt) {
-   // You should multiply any movement by the dt parameter
-   // which will ensure the game runs at the same speed for
-   // all computers.
-   // my note: enemies are generated at a random line, with a 
-   // random speed (within a range), moving from left to right.
-   // they are reset when they reach the right margin
-   // the speed increases by 2% at every update
    if (!GAME_OVER) {
       if (this.x > RIGHT_BORDER) {
          // reset this entity
@@ -121,9 +129,9 @@ Enemy.prototype.update = function(dt) {
             this.speed = this.speed * this.velocityIncrease;
             this.velocityIncrease = this.velocityIncrease * 1.02;
          }
-         // go!
+      // 
       } else {
-         this.x+=101*dt*this.speed;
+         this.x += ENTITY_WIDTH * dt * this.speed;
       }
    }
 };
@@ -215,13 +223,14 @@ Prize.prototype.render = function() {
 var player = new Player(PLAYER_START_X,PLAYER_START_Y,ENTITY_WIDTH,ENTITY_HEIGHT);
 var allEnemies = [];
 // create the enemies
-for (var i=0;i<MAX_NUMBER_ENEMIES; i++) {
-   // pick a random line (1, 2 or 3)
-   var r = randomGenerator(0,2);
-   var velocity = randomGenerator(1,5);
-   var enemy = new Enemy(ENTITY_WIDTH * -1,ENEMY_ROW_START+(r*83),velocity,ENTITY_WIDTH,ENTITY_HEIGHT);
-   allEnemies.push(enemy);
-};
+createTheEnemies();
+// for (var i=0;i<MAX_NUMBER_ENEMIES; i++) {
+//    // pick a random line (1, 2 or 3)
+//    var randomLine = randomGenerator(0,2);
+//    var velocity = randomGenerator(1,5);
+//    var enemy = new Enemy(ENTITY_WIDTH * -1, ENEMY_ROW_START + (randomLine * 83), velocity, ENTITY_WIDTH, ENTITY_HEIGHT);
+//    allEnemies.push(enemy);
+// };
 
 // prizes are not created here but later on, see engine.js
 

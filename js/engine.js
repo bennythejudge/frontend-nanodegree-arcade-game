@@ -54,7 +54,6 @@ var Engine = (function(global) {
           console.log('button is null!');
        } else {
           btn.value='Restart Game!';
-          // console.log("button is NOT null!");
        }
        // reset the player to new game
        player = new Player(PLAYER_START_X,
@@ -64,14 +63,16 @@ var Engine = (function(global) {
        // reset the enemies
        allEnemies = [];
        // create the enemies
-       for (var i=0;i<MAX_NUMBER_ENEMIES; i++) {
-          // pick a random line (1, 2 or 3)
-          var r = randomGenerator(0,2);
-          var velocity = randomGenerator(1,5);
-          // console.log("random: " + r);
-          var enemy = new Enemy(ENTITY_WIDTH * -1, ENEMY_ROW_START+(r*83),velocity,ENTITY_WIDTH,ENTITY_HEIGHT);
-          allEnemies.push(enemy);
-       }
+       // for (var i=0;i<MAX_NUMBER_ENEMIES; i++) {
+       //    // pick a random line (1, 2 or 3)
+       //    var r = randomGenerator(0,2);
+       //    var velocity = randomGenerator(1,5);
+       //    // console.log("random: " + r);
+       //    var enemy = new Enemy(ENTITY_WIDTH * -1, ENEMY_ROW_START+(r*83),velocity,ENTITY_WIDTH,ENTITY_HEIGHT);
+       //    allEnemies.push(enemy);
+       // }
+       createTheEnemies();
+       
        STARTED = true;
        GAME_OVER = false;
        // timer=0;
@@ -219,10 +220,10 @@ var Engine = (function(global) {
                       TILE_HEIGHT*col-10,
                       'images/Star.png',
                       PRIZE_WIDTH,PRIZE_HEIGHT);
-             r = randomGenerator(6,18);
+             // r = randomGenerator(6,18);
              // console.log(r);
              prize.starttime = new Date().getTime() / 1000;
-             prize.lifetime = r;
+             prize.lifetime = randomGenerator(6,18);
           }
        }
     };
@@ -255,8 +256,8 @@ var Engine = (function(global) {
     --------------------------------------------------
     */
     function checkPrizeCollections() {
-       var t = collisionDetection(prize,player);
-       if (t === true) {
+       // var t = ;
+       if (collisionDetection(prize,player) === true) {
           prize=null;
           player.score++;
           doc.getElementById('timer').innerHTML = 'Well done!';
