@@ -29,16 +29,11 @@ The changes have been made under a branch named 2nd-attempt in the same reposito
 https://github.com/bennythejudge/frontend-nanodegree-arcade-game
 After making the changes, I have merged the branch to the master.
 Please find here some additional notes on the submission:
-1) Game Functions
+1. Game Functions
 Although I have considered your Suggestion, I hope you will understand that I have chosen not to act on this aspect since you graded this section "Exceeds specifications". I wish I had time to improve the game which is really basic and not very challenging or entertaining, but due to chronic and persistent lack of time, I have to force myself to leave it as it is.
 I also confess having hit a "creative" roadblock probably induced by the pressure of the coming projects and deadlines.
-2) Code Quality
-I keep failing on code quality, as I did in project nr. 1 again and again.
-Please forgive me for repeating the same mistakes. As I code for work in Perl and Python using vi and vim, I perpetuate bad habits that no one has helped me fix for over 2 decades. I am trying to improve the quality of the code and to adhere to the standards dictated in the Google JavaScript Style Guide.
-I have now added the missing semicolons - here I face problems because I am used to Perl where semicolons are mandatory basically always and Python where on the other end there is no line termination character.
-I feel caught between Scylla and Charybdis. :-)
-I have also reviewed the variable names and I hope you will find them compliant now.
+
+2. Code Quality
+I have now added the missing semicolons. I have reviewed the variable names.
 I have replaced all double-quotes with single quotes.
-Finally I have reviewed the variable names and tried to apply your suggestion.
-I have also tried to cleanup some of the comments and remove some of the debugging lines
-that had been left commented.
+I have cleaned up the comments and removed the debugging lines that had been left commented.
