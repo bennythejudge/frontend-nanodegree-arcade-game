@@ -4,6 +4,9 @@ By Benedetto Lo Giudice
 
 frontend-nanodegree-arcade-game
 ===============================
+
+[![GuardRails badge](https://badges.production.guardrails.io/bennythejudge/frontend-nanodegree-arcade-game.svg)](https://www.guardrails.io)
+
 How to:
 There are various ways to execute this game depending on your configuration.
 **Please note that loading the index.html in the browser will not work.**
